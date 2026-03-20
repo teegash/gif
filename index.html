@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Thematic Reveal Concept</title>
+    <title>Animated QR Gift Card Concept</title>
     <meta
       name="description"
-      content="Frontend proof of concept for a cinematic gift reveal experience with multi-theme GSAP storytelling."
+      content="Frontend proof of concept for a premium animated QR gift card with themed 3D motion."
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -25,20 +25,11 @@
       <a class="brand" href="#hero" aria-label="Go to top">
         <span class="brand__mark"></span>
         <span class="brand__copy">
-          <strong>Reveal StoryLab</strong>
-          <small>Frontend concept prototype</small>
+          <strong data-field="companyName">Noble Gift Co.</strong>
+          <small>QR gift card concept</small>
         </span>
       </a>
-
-      <nav class="topbar__nav" aria-label="Page sections">
-        <a href="#experience">Journey</a>
-        <a href="#themes">Themes</a>
-        <a href="#proof">Proof</a>
-      </nav>
-
-      <button class="ghost-button" type="button" data-scroll-target="#chapter-reveal">
-        Jump to Reveal
-      </button>
+      <div class="topbar__meta">Premium 3D hamper card</div>
     </header>
 
     <main id="smooth-wrapper">
@@ -53,34 +44,32 @@
           <div class="hero__content">
             <p class="eyebrow" data-field="entryLabel">Gift card opened from a hamper QR</p>
             <h1 class="hero__title" data-field="heroTitle">
-              Proof that a hamper can feel like a cinematic event.
+              Scan the hamper QR and open a premium gift card in 3D.
             </h1>
             <p class="hero__lede" data-field="heroLede">
-              Scroll through a premium multi-chapter reveal with theme switching, smooth motion,
-              3D depth, and a grand product climax.
+              The page should clearly show the sender, receiver, and message inside a themed animated card, with the theme acting as atmosphere rather than noise.
             </p>
 
             <div class="hero__actions">
-              <button class="primary-button" type="button" data-scroll-target="#experience">
-                Enter the Journey
+              <button class="primary-button" type="button" data-card-toggle>
+                Open the Card
               </button>
-              <button class="secondary-button" type="button" data-scroll-target="#themes">
-                Explore Themes
-              </button>
+              <span class="hero__hint">Tap the card to read the message inside.</span>
             </div>
 
-            <div class="hero__metrics">
-              <article class="metric-card">
-                <span class="metric-card__value" data-counter="4">4</span>
-                <span class="metric-card__label">Cinematic chapters</span>
+            <div class="card-summary glass-card" aria-label="Gift card details">
+              <article class="card-summary__item">
+                <span class="card-summary__label">Sender</span>
+                <strong data-field="senderLabel">Marcus in Dubai</strong>
               </article>
-              <article class="metric-card">
-                <span class="metric-card__value" data-counter="3">3</span>
-                <span class="metric-card__label">Premium themes</span>
+              <article class="card-summary__item">
+                <span class="card-summary__label">Receiver</span>
+                <strong data-field="receiverLabel">Sarah in Nairobi</strong>
               </article>
-              <article class="metric-card">
-                <span class="metric-card__value" data-counter="60">60</span>
-                <span class="metric-card__label">FPS-inspired motion target</span>
+              <article class="card-summary__item">
+                <span class="card-summary__label">What Opens</span>
+                <strong>Message inside the hamper card</strong>
+                <small>The theme stays around the card so the note remains easy to read.</small>
               </article>
             </div>
 
@@ -185,30 +174,6 @@
                       </footer>
                     </article>
                   </div>
-                </div>
-
-                <div class="hero-story glass-card">
-                  <span class="preview-card__label">Sender world</span>
-                  <strong data-field="senderLabel">Marcus in Dubai</strong>
-                  <p data-field="chapter1Hook">
-                    A cinematic opening scene with mood, setting, and anticipation.
-                  </p>
-                </div>
-
-                <div class="hero-route glass-card">
-                  <span class="preview-card__label">Journey sequence</span>
-                  <div class="preview-route">
-                    <span data-route-index="0">Dubai Port</span>
-                    <span data-route-index="1">Monsoon Rift</span>
-                    <span data-route-index="2">Moonlit Current</span>
-                    <span data-route-index="3">Nairobi Cove</span>
-                  </div>
-                </div>
-
-                <div class="hero-proof glass-card">
-                  <span class="preview-card__label">Grand reveal</span>
-                  <strong data-field="productName">iPhone 15 Pro</strong>
-                  <p data-field="revealHook">The treasure rises with light, particles, and a shareable finish.</p>
                 </div>
               </div>
             </div>

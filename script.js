@@ -5,12 +5,12 @@
     pirate: {
       id: "pirate",
       name: "Pirate Voyage",
-      entryLabel: "Gift card opened from a hamper QR",
+      entryLabel: "Opened from the hamper QR code",
       companyName: "Noble Gift Co.",
       senderName: "Marcus",
-      heroTitle: "Open a hamper link and step into a treasure-grade gift card.",
+      heroTitle: "Scan the hamper QR and open a treasure-styled gift card.",
       heroLede:
-        "The QR destination becomes the actual themed gift card: who it is from, where it came from, and the personal message inside a premium animated 3D webpage.",
+        "A premium 3D pirate card reveals who sent the hamper, who it is for, and the message inside without cluttering the screen.",
       senderLabel: "Marcus in Dubai",
       receiverLabel: "Sarah in Nairobi",
       fromLine: "From Marcus in Dubai",
@@ -49,12 +49,12 @@
     valentine: {
       id: "valentine",
       name: "Valentine Bloom",
-      entryLabel: "Gift card opened from a hamper QR",
+      entryLabel: "Opened from the hamper QR code",
       companyName: "Noble Gift Co.",
       senderName: "Amina",
-      heroTitle: "Open a hamper link and reveal a love note in motion.",
+      heroTitle: "Scan the hamper QR and open a romantic gift card.",
       heroLede:
-        "The QR destination becomes a romantic themed card where the receiver opens a message, sees who sent it, and feels the reveal through hearts, balloons, and cinematic motion.",
+        "A premium 3D valentine card reveals the sender, receiver, and message clearly, with hearts, balloons, and confetti used as atmosphere.",
       senderLabel: "Amina in Kigali",
       receiverLabel: "Daniel in Nairobi",
       fromLine: "From Amina in Kigali",
@@ -93,12 +93,12 @@
     "mothers-day": {
       id: "mothers-day",
       name: "Mother's Day Glow",
-      entryLabel: "Gift card opened from a hamper QR",
+      entryLabel: "Opened from the hamper QR code",
       companyName: "Noble Gift Co.",
       senderName: "Brian",
-      heroTitle: "Open a hamper link and unfold a gratitude-filled gift card.",
+      heroTitle: "Scan the hamper QR and open a gratitude-filled gift card.",
       heroLede:
-        "The QR destination becomes a themed appreciation card where the receiver sees who sent the hamper, where it came from, and a heartfelt message inside a rich animated page.",
+        "A premium 3D Mother's Day card reveals the sender, receiver, and message cleanly, with warm floral motion supporting the note instead of covering it.",
       senderLabel: "Brian in Mombasa",
       receiverLabel: "Grace in Nairobi",
       fromLine: "From Brian in Mombasa",
@@ -162,10 +162,14 @@
     cursorGlow: document.querySelector(".cursor-glow"),
     fieldNodes: Array.from(document.querySelectorAll("[data-field]")),
     routeNodes: Array.from(document.querySelectorAll("[data-route-index]")),
+    heroCard: document.querySelector(".gift-card--hero"),
+    heroCardInner: document.querySelector(".gift-card--hero .gift-card__inner"),
+    cardToggle: document.querySelector("[data-card-toggle]"),
   };
 
   let activeTheme = "pirate";
   let lenis = null;
+  let cardIsOpen = false;
 
   function getParticleVariants(themeKey, bucket) {
     if (bucket === "sky") {
@@ -338,7 +342,9 @@
       }
     });
 
-    dom.activeThemeName.textContent = theme.name;
+    if (dom.activeThemeName) {
+      dom.activeThemeName.textContent = theme.name;
+    }
 
     dom.themeButtons.forEach((button) => {
       const isActive = button.dataset.themeOption === theme.id;
@@ -358,7 +364,8 @@
     }
 
     if (!initial && window.gsap && previousTheme !== themeKey) {
-      const fields = [...dom.fieldNodes, ...dom.routeNodes, dom.activeThemeName];
+      const fields = [...dom.fieldNodes, ...dom.routeNodes].filter(Boolean);
+      if (dom.activeThemeName) fields.push(dom.activeThemeName);
       gsap.fromTo(
         fields,
         { opacity: 0.2, y: 10 },
@@ -373,7 +380,7 @@
       );
 
       gsap.fromTo(
-        [dom.senderWorld, dom.journeyWorld, dom.receiverWorld, dom.revealWorld],
+        [".hero__preview-frame", ".theme-visual", ".gift-card--hero"].filter(Boolean),
         { filter: "blur(10px)", scale: 0.985 },
         {
           filter: "blur(0px)",
@@ -405,15 +412,6 @@
       duration: 1.1,
       ease: "power3.out",
       delay: 0.14,
-    });
-
-    gsap.from(".hero-story, .hero-route, .hero-proof", {
-      y: 34,
-      opacity: 0,
-      duration: 1.1,
-      stagger: 0.09,
-      ease: "power3.out",
-      delay: 0.18,
     });
   }
 
@@ -461,32 +459,6 @@
     gsap.to(".bloom-float, .tribute-float", {
       y: -10,
       duration: 3.4,
-      repeat: -1,
-      yoyo: true,
-      ease: "sine.inOut",
-    });
-
-    gsap.to(".gift-card--hero", {
-      y: -10,
-      duration: 3.6,
-      repeat: -1,
-      yoyo: true,
-      ease: "sine.inOut",
-    });
-
-    gsap.to(".gift-card--hero .gift-card__inner", {
-      rotateY: 8,
-      rotateX: -3,
-      duration: 4.4,
-      repeat: -1,
-      yoyo: true,
-      ease: "sine.inOut",
-      transformOrigin: "center center",
-    });
-
-    gsap.to(".gift-card--stage", {
-      y: -8,
-      duration: 4.1,
       repeat: -1,
       yoyo: true,
       ease: "sine.inOut",
@@ -540,52 +512,6 @@
       transformOrigin: "center center",
     });
 
-    gsap.to(".coin-ring, .heart-orbit", {
-      rotate: 360,
-      duration: 18,
-      repeat: -1,
-      ease: "none",
-      transformOrigin: "center center",
-    });
-
-    gsap.to(".journey-portal", {
-      scale: 1.08,
-      duration: 2.8,
-      repeat: -1,
-      yoyo: true,
-      ease: "sine.inOut",
-      stagger: 0.2,
-    });
-
-    gsap.to(".journey-cloud", {
-      x: 28,
-      duration: 9,
-      repeat: -1,
-      yoyo: true,
-      ease: "sine.inOut",
-      stagger: 0.3,
-    });
-
-    gsap.to(".map-point", {
-      y: -6,
-      scale: 1.04,
-      duration: 2.6,
-      repeat: -1,
-      yoyo: true,
-      ease: "sine.inOut",
-      stagger: 0.16,
-    });
-
-    gsap.to(".journey-streak", {
-      x: 50,
-      opacity: 0.18,
-      duration: 1.8,
-      repeat: -1,
-      yoyo: true,
-      ease: "sine.inOut",
-      stagger: 0.08,
-    });
-
     gsap.to(".flower-burst, .confetti-cluster", {
       rotate: 12,
       duration: 6,
@@ -593,14 +519,6 @@
       yoyo: true,
       ease: "sine.inOut",
       transformOrigin: "center center",
-    });
-
-    gsap.to(".journey-compass__needle", {
-      rotate: 360,
-      duration: 12,
-      repeat: -1,
-      ease: "none",
-      transformOrigin: "center 85%",
     });
 
     gsap.to(".hero-scene__sea--front", {
@@ -631,22 +549,12 @@
         ease: "power2.out",
       });
 
-      gsap.to(".sender-world .world-card", {
-        rotateY: gsap.utils.mapRange(0, window.innerWidth, -6, 6, event.clientX),
-        rotateX: gsap.utils.mapRange(0, window.innerHeight, 5, -5, event.clientY),
-        duration: 0.8,
-        ease: "power3.out",
-      });
+      if (!dom.heroCardInner) return;
 
-      gsap.to(".receiver-world .world-card", {
-        x: gsap.utils.mapRange(0, window.innerWidth, -10, 10, event.clientX),
-        y: gsap.utils.mapRange(0, window.innerHeight, -8, 8, event.clientY),
-        duration: 1.1,
-        ease: "power3.out",
-      });
+      const baseRotateY = cardIsOpen ? 180 : 0;
 
-      gsap.to(".gift-card--hero .gift-card__inner", {
-        rotateY: gsap.utils.mapRange(0, window.innerWidth, -12, 12, event.clientX),
+      gsap.to(dom.heroCardInner, {
+        rotateY: baseRotateY + gsap.utils.mapRange(0, window.innerWidth, -10, 10, event.clientX),
         rotateX: gsap.utils.mapRange(0, window.innerHeight, 8, -8, event.clientY),
         duration: 1,
         ease: "power3.out",
@@ -686,12 +594,77 @@
     target.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth", block: "start" });
   }
 
+  function setCardState(nextState) {
+    cardIsOpen = nextState;
+    dom.body.classList.toggle("card-is-open", cardIsOpen);
+
+    if (dom.heroCard) {
+      dom.heroCard.classList.toggle("is-open", cardIsOpen);
+    }
+
+    if (dom.cardToggle) {
+      dom.cardToggle.textContent = cardIsOpen ? "Show the Front" : "Open the Card";
+      dom.cardToggle.setAttribute("aria-pressed", String(cardIsOpen));
+    }
+
+    if (!window.gsap || !dom.heroCardInner) return;
+
+    gsap.killTweensOf(dom.heroCardInner);
+    gsap.killTweensOf(".preview-glow");
+    gsap.killTweensOf(dom.heroCard);
+
+    gsap.to(dom.heroCardInner, {
+      rotateY: cardIsOpen ? 180 : 0,
+      rotateX: cardIsOpen ? 0 : -2,
+      duration: 1.05,
+      ease: "power3.inOut",
+      overwrite: true,
+    });
+
+    if (dom.heroCard) {
+      gsap.to(dom.heroCard, {
+        y: cardIsOpen ? -8 : 0,
+        scale: cardIsOpen ? 1.02 : 1,
+        duration: 0.8,
+        ease: "power2.out",
+        overwrite: true,
+      });
+    }
+
+    gsap.to(".preview-glow", {
+      opacity: cardIsOpen ? 0.98 : 0.65,
+      duration: 0.6,
+      ease: "power2.out",
+      overwrite: true,
+    });
+  }
+
   function initButtons() {
     dom.themeButtons.forEach((button) => {
       button.addEventListener("click", () => {
         applyTheme(button.dataset.themeOption);
       });
     });
+
+    if (dom.cardToggle) {
+      dom.cardToggle.addEventListener("click", () => {
+        setCardState(!cardIsOpen);
+      });
+    }
+
+    if (dom.heroCard) {
+      dom.heroCard.setAttribute("role", "button");
+      dom.heroCard.setAttribute("tabindex", "0");
+      dom.heroCard.addEventListener("click", () => {
+        setCardState(!cardIsOpen);
+      });
+      dom.heroCard.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          setCardState(!cardIsOpen);
+        }
+      });
+    }
 
     document.querySelectorAll("[data-scroll-target]").forEach((button) => {
       button.addEventListener("click", () => {
@@ -1123,16 +1096,10 @@
 
   function boot() {
     buildAmbientParticles();
-    buildBurstPieces();
     applyTheme(activeTheme, { initial: true });
-    initLenis();
     initButtons();
     initHeroEntrance();
     initIdleTimelines();
-    initScrollAnimations();
-    initCounters();
-    initThemeCardHover();
-    initThemeSelectionFromCards();
     initCursorGlow();
   }
 

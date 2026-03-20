@@ -3247,3 +3247,420 @@ body[data-theme="mothers-day"] .gift-vault__lid {
     grid-template-columns: 1fr;
   }
 }
+
+/* Card-first refinement */
+
+.topbar {
+  width: min(calc(100% - 2rem), 1180px);
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.topbar__nav,
+.topbar .ghost-button,
+.hero__metrics,
+.scroll-cue,
+.experience,
+.chapter,
+.proof,
+.hero-story,
+.hero-route,
+.hero-proof {
+  display: none !important;
+}
+
+.topbar__meta {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.65rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--muted);
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.hero {
+  min-height: 100svh;
+  gap: clamp(2.5rem, 5vw, 5rem);
+  padding: clamp(7.5rem, 10vw, 9rem) 0 4rem;
+  grid-template-columns: minmax(0, 0.9fr) minmax(360px, 0.92fr);
+}
+
+.hero__content {
+  max-width: 31rem;
+  display: grid;
+  align-content: center;
+  gap: 1.2rem;
+}
+
+.hero__title {
+  max-width: 8.5ch;
+  font-size: clamp(3.4rem, 5.5vw, 5.8rem);
+}
+
+.hero__lede {
+  max-width: 33rem;
+  font-size: 1.02rem;
+  line-height: 1.8;
+}
+
+.hero__actions {
+  margin-top: 0.35rem;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.hero__hint {
+  color: var(--muted);
+  font-size: 0.94rem;
+  line-height: 1.6;
+}
+
+.card-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.85rem;
+  margin-top: 0.2rem;
+  padding: 0.75rem;
+  border-radius: 30px;
+}
+
+.card-summary__item {
+  display: grid;
+  gap: 0.38rem;
+  padding: 1rem 1.05rem;
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.card-summary__label {
+  color: var(--muted);
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.card-summary__item strong {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.card-summary__item small {
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.55;
+}
+
+.theme-dock {
+  margin-top: 0.1rem;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.theme-pill {
+  min-height: 3.35rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.85rem 1rem;
+  text-align: center;
+  line-height: 1.25;
+}
+
+.hero__preview {
+  padding: 0.95rem;
+  border-radius: 42px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.24);
+}
+
+.hero__preview-frame {
+  min-height: 41rem;
+  background:
+    radial-gradient(circle at 50% 14%, color-mix(in srgb, var(--accent-1) 18%, transparent), transparent 36%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+}
+
+.hero__preview-frame::before,
+.hero__preview-frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.hero__preview-frame::before {
+  background: radial-gradient(circle at 50% 18%, color-mix(in srgb, var(--accent-2) 14%, transparent), transparent 24%);
+  opacity: 0.8;
+}
+
+.hero__preview-frame::after {
+  background: radial-gradient(circle at 50% 52%, transparent 0 20%, rgba(5, 9, 18, 0.1) 62%, rgba(5, 9, 18, 0.55) 100%);
+}
+
+.hero-scene {
+  min-height: 41rem;
+}
+
+.preview-glow {
+  inset: 16% 14% 14%;
+  opacity: 0.65;
+  filter: blur(55px);
+}
+
+.hero-scene__mist {
+  inset: auto -8% -4%;
+  height: 42%;
+  opacity: 0.6;
+}
+
+.hero-scene__orb--left {
+  left: -4%;
+  top: 8%;
+  width: 14rem;
+  height: 14rem;
+  opacity: 0.42;
+}
+
+.hero-scene__orb--right {
+  right: -4%;
+  top: 11%;
+  width: 13rem;
+  height: 13rem;
+  opacity: 0.36;
+}
+
+.theme-visual {
+  transition:
+    opacity 0.5s ease,
+    transform 0.6s ease;
+}
+
+.theme-visual--pirate .scene-ship {
+  left: 47%;
+  bottom: 16%;
+  width: min(23rem, 62%);
+  height: 14rem;
+  transform: translateX(-44%);
+  opacity: 0.54;
+}
+
+.theme-visual--pirate .captain {
+  right: 8%;
+  bottom: 15%;
+  transform: scale(0.82);
+  opacity: 0.76;
+}
+
+.theme-visual--valentine .bloom-arch {
+  left: 50%;
+  bottom: 14%;
+  transform: translateX(-50%) scale(0.98);
+}
+
+.theme-visual--valentine .balloon-bunch--hero {
+  left: 50%;
+  top: 18%;
+  transform: translateX(-50%) scale(0.92);
+}
+
+.theme-visual--mothers-day .tribute-vase {
+  left: 50%;
+  bottom: 14%;
+  transform: translateX(-50%) scale(0.96);
+}
+
+.gift-card--hero {
+  width: min(20.5rem, calc(100% - 5rem));
+  height: 26rem;
+  top: 50%;
+  z-index: 4;
+  cursor: pointer;
+}
+
+.gift-card__inner {
+  will-change: transform;
+}
+
+.gift-card__face {
+  padding: 1.45rem 1.45rem 1.55rem;
+  border-radius: 2.1rem;
+  gap: 0.95rem;
+}
+
+.gift-card__hint {
+  font-size: 0.76rem;
+  letter-spacing: 0.16em;
+}
+
+.gift-card__title {
+  max-width: 8ch;
+  font-size: clamp(2.1rem, 3.4vw, 2.7rem);
+}
+
+.gift-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.gift-card__meta span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.1rem;
+  padding: 0.58rem 0.82rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
+  font-size: 0.82rem;
+  line-height: 1.35;
+}
+
+.gift-card__message {
+  max-width: 13ch;
+  font-size: clamp(1.42rem, 2.6vw, 1.95rem);
+  line-height: 1.22;
+}
+
+.gift-card__signature strong {
+  font-size: 1.15rem;
+}
+
+body.card-is-open .gift-card--hero {
+  filter: drop-shadow(0 30px 90px rgba(0, 0, 0, 0.32));
+}
+
+@media (max-width: 1100px) {
+  .hero {
+    grid-template-columns: 1fr;
+    gap: 1.6rem;
+  }
+
+  .hero__content {
+    max-width: 100%;
+  }
+
+  .hero__preview {
+    order: -1;
+    width: 100%;
+    max-width: 46rem;
+    margin-inline: auto;
+  }
+
+  .card-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .card-summary__item:last-child {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 720px) {
+  .topbar {
+    top: 0.75rem;
+    width: calc(100% - 1rem);
+    padding: 0.75rem 0.95rem;
+  }
+
+  .topbar__meta {
+    font-size: 0.66rem;
+    letter-spacing: 0.14em;
+  }
+
+  .hero {
+    padding: 6.4rem 0 2.25rem;
+    gap: 1.15rem;
+  }
+
+  .hero__title {
+    max-width: 10ch;
+    font-size: clamp(2.75rem, 13vw, 4.1rem);
+  }
+
+  .hero__lede,
+  .hero__hint {
+    font-size: 0.92rem;
+  }
+
+  .hero__actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  .card-summary {
+    grid-template-columns: 1fr;
+    padding: 0.6rem;
+    border-radius: 24px;
+  }
+
+  .card-summary__item:last-child {
+    grid-column: auto;
+  }
+
+  .theme-dock {
+    grid-template-columns: 1fr;
+  }
+
+  .hero__preview {
+    padding: 0.7rem;
+    border-radius: 30px;
+  }
+
+  .hero__preview-frame,
+  .hero-scene {
+    min-height: 33rem;
+  }
+
+  .gift-card--hero {
+    width: min(17rem, calc(100% - 1.8rem));
+    height: 22.5rem;
+    top: 52%;
+  }
+
+  .gift-card__face {
+    padding: 1.1rem 1.1rem 1.2rem;
+    border-radius: 1.65rem;
+  }
+
+  .gift-card__title {
+    font-size: 1.95rem;
+  }
+
+  .gift-card__message {
+    font-size: 1.48rem;
+  }
+
+  .theme-visual--pirate .scene-ship {
+    width: 15.5rem;
+    height: 10rem;
+    left: 50%;
+    bottom: 16%;
+    transform: translateX(-56%);
+  }
+
+  .theme-visual--pirate .captain {
+    right: 4%;
+    bottom: 14%;
+    transform: scale(0.64);
+  }
+
+  .theme-visual--valentine .balloon-bunch--hero {
+    top: 17%;
+    transform: translateX(-50%) scale(0.68);
+  }
+
+  .theme-visual--mothers-day .tribute-vase {
+    transform: translateX(-50%) scale(0.78);
+  }
+
+  .cursor-glow {
+    display: none;
+  }
+}
