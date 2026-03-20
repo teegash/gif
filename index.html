@@ -19,6 +19,7 @@
   <body data-theme="pirate">
     <div class="noise"></div>
     <div class="cursor-glow" aria-hidden="true"></div>
+    <div class="sky-particles" id="sky-particles" aria-hidden="true"></div>
 
     <header class="topbar">
       <a class="brand" href="#hero" aria-label="Go to top">
@@ -50,7 +51,7 @@
           </div>
 
           <div class="hero__content">
-            <p class="eyebrow">Immersive gifting concept</p>
+            <p class="eyebrow" data-field="entryLabel">Gift card opened from a hamper QR</p>
             <h1 class="hero__title" data-field="heroTitle">
               Proof that a hamper can feel like a cinematic event.
             </h1>
@@ -99,26 +100,116 @@
           <aside class="hero__preview glass-card">
             <div class="hero__preview-frame">
               <div class="preview-glow"></div>
-              <div class="preview-card preview-card--sender">
-                <span class="preview-card__label">Sender world</span>
-                <strong data-field="senderLabel">Marcus in Dubai</strong>
-                <p data-field="chapter1Hook">
-                  A cinematic opening scene with mood, setting, and anticipation.
-                </p>
-              </div>
-              <div class="preview-card preview-card--route">
-                <span class="preview-card__label">Journey sequence</span>
-                <div class="preview-route">
-                  <span data-route-index="0">Dubai Port</span>
-                  <span data-route-index="1">Monsoon Rift</span>
-                  <span data-route-index="2">Moonlit Current</span>
-                  <span data-route-index="3">Nairobi Cove</span>
+              <div class="hero-scene">
+                <div class="hero-scene__mist"></div>
+                <div class="hero-scene__orb hero-scene__orb--left"></div>
+                <div class="hero-scene__orb hero-scene__orb--right"></div>
+                <div class="hero-scene__horizon"></div>
+                <div class="hero-scene__sea hero-scene__sea--back"></div>
+                <div class="hero-scene__sea hero-scene__sea--front"></div>
+
+                <div class="theme-visual theme-visual--pirate">
+                  <div class="scene-ship ship-float">
+                    <div class="scene-ship__mast scene-ship__mast--rear"></div>
+                    <div class="scene-ship__mast scene-ship__mast--front"></div>
+                    <div class="scene-ship__sail scene-ship__sail--rear"></div>
+                    <div class="scene-ship__sail scene-ship__sail--front"></div>
+                    <div class="scene-ship__flag flag-wave"></div>
+                    <div class="scene-ship__hull"></div>
+                    <div class="scene-ship__deck"></div>
+                    <div class="scene-ship__shadow"></div>
+                  </div>
+
+                  <div class="captain captain-float">
+                    <div class="captain__hat"></div>
+                    <div class="captain__head"></div>
+                    <div class="captain__body"></div>
+                    <div class="captain__arm"></div>
+                    <div class="captain__parrot parrot-bob">
+                      <span class="captain__parrot-wing"></span>
+                      <span class="captain__parrot-beak"></span>
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <div class="preview-card preview-card--reveal">
-                <span class="preview-card__label">Grand reveal</span>
-                <strong data-field="productName">iPhone 15 Pro</strong>
-                <p data-field="revealHook">The treasure rises with light, particles, and a shareable finish.</p>
+
+                <div class="theme-visual theme-visual--valentine">
+                  <div class="bloom-arch bloom-float">
+                    <div class="bloom-arch__halo"></div>
+                    <div class="bloom-arch__heart bloom-arch__heart--large"></div>
+                    <div class="bloom-arch__heart bloom-arch__heart--small"></div>
+                    <div class="balloon-bunch balloon-bunch--hero">
+                      <span class="balloon balloon--one"></span>
+                      <span class="balloon balloon--two"></span>
+                      <span class="balloon balloon--three"></span>
+                    </div>
+                    <div class="love-ribbon love-ribbon--left"></div>
+                    <div class="love-ribbon love-ribbon--right"></div>
+                    <div class="confetti-cluster confetti-cluster--hero"></div>
+                    <div class="bloom-arch__pedestal"></div>
+                  </div>
+                </div>
+
+                <div class="theme-visual theme-visual--mothers-day">
+                  <div class="tribute-vase tribute-float">
+                    <div class="tribute-vase__glow"></div>
+                    <div class="tribute-vase__bouquet"></div>
+                    <div class="tribute-vase__gift"></div>
+                    <div class="memory-frame memory-frame--one"></div>
+                    <div class="memory-frame memory-frame--two"></div>
+                    <div class="joy-orb joy-orb--one"></div>
+                    <div class="joy-orb joy-orb--two"></div>
+                    <div class="flower-burst flower-burst--hero"></div>
+                  </div>
+                </div>
+
+                <div class="gift-card gift-card--hero">
+                  <div class="gift-card__inner">
+                    <article class="gift-card__face gift-card__face--front">
+                      <span class="gift-card__seal" data-field="companyName">Noble Gift Co.</span>
+                      <span class="gift-card__hint">Scanned from hamper QR</span>
+                      <h3 class="gift-card__title" data-field="cardTitle">A treasure has been sent</h3>
+                      <div class="gift-card__meta">
+                        <span data-field="fromLine">From Marcus in Dubai</span>
+                        <span data-field="toLine">For Sarah in Nairobi</span>
+                      </div>
+                      <div class="gift-card__crest"></div>
+                    </article>
+                    <article class="gift-card__face gift-card__face--back">
+                      <span class="gift-card__hint">Inside the card</span>
+                      <p class="gift-card__message" data-field="cardMessage">
+                        Sarah, may this treasure remind you that you are deeply valued and celebrated.
+                      </p>
+                      <footer class="gift-card__signature">
+                        <span>With love,</span>
+                        <strong data-field="senderName">Marcus</strong>
+                      </footer>
+                    </article>
+                  </div>
+                </div>
+
+                <div class="hero-story glass-card">
+                  <span class="preview-card__label">Sender world</span>
+                  <strong data-field="senderLabel">Marcus in Dubai</strong>
+                  <p data-field="chapter1Hook">
+                    A cinematic opening scene with mood, setting, and anticipation.
+                  </p>
+                </div>
+
+                <div class="hero-route glass-card">
+                  <span class="preview-card__label">Journey sequence</span>
+                  <div class="preview-route">
+                    <span data-route-index="0">Dubai Port</span>
+                    <span data-route-index="1">Monsoon Rift</span>
+                    <span data-route-index="2">Moonlit Current</span>
+                    <span data-route-index="3">Nairobi Cove</span>
+                  </div>
+                </div>
+
+                <div class="hero-proof glass-card">
+                  <span class="preview-card__label">Grand reveal</span>
+                  <strong data-field="productName">iPhone 15 Pro</strong>
+                  <p data-field="revealHook">The treasure rises with light, particles, and a shareable finish.</p>
+                </div>
               </div>
             </div>
           </aside>
@@ -134,8 +225,93 @@
               <div class="stage__ambient stage__ambient--one"></div>
               <div class="stage__ambient stage__ambient--two"></div>
               <div class="stage__grid"></div>
+              <div class="stage-transition">
+                <div class="stage-transition__veil"></div>
+                <div class="stage-transition__pulse"></div>
+              </div>
+              <div class="gift-card gift-card--stage">
+                <div class="gift-card__inner">
+                  <article class="gift-card__face gift-card__face--front">
+                    <span class="gift-card__seal" data-field="companyName">Noble Gift Co.</span>
+                    <span class="gift-card__hint">The hamper card</span>
+                    <h3 class="gift-card__title" data-field="cardTitle">A treasure has been sent</h3>
+                    <div class="gift-card__meta">
+                      <span data-field="fromLine">From Marcus in Dubai</span>
+                      <span data-field="toLine">For Sarah in Nairobi</span>
+                    </div>
+                    <div class="gift-card__crest"></div>
+                  </article>
+                  <article class="gift-card__face gift-card__face--back">
+                    <span class="gift-card__hint">Personal message</span>
+                    <p class="gift-card__message" data-field="cardMessage">
+                      Sarah, may this treasure remind you that you are deeply valued and celebrated.
+                    </p>
+                    <footer class="gift-card__signature">
+                      <span>Sent by</span>
+                      <strong data-field="senderName">Marcus</strong>
+                    </footer>
+                  </article>
+                </div>
+              </div>
 
               <div class="world sender-world">
+                <div class="sender-set theme-stage theme-stage--pirate">
+                  <div class="sender-set__sea"></div>
+                  <div class="scene-ship scene-ship--stage ship-float">
+                    <div class="scene-ship__mast scene-ship__mast--rear"></div>
+                    <div class="scene-ship__mast scene-ship__mast--front"></div>
+                    <div class="scene-ship__sail scene-ship__sail--rear"></div>
+                    <div class="scene-ship__sail scene-ship__sail--front"></div>
+                    <div class="scene-ship__flag flag-wave"></div>
+                    <div class="scene-ship__hull"></div>
+                    <div class="scene-ship__deck"></div>
+                    <div class="scene-ship__shadow"></div>
+                  </div>
+                  <div class="captain captain--stage captain-float">
+                    <div class="captain__hat"></div>
+                    <div class="captain__head"></div>
+                    <div class="captain__body"></div>
+                    <div class="captain__arm"></div>
+                    <div class="captain__parrot parrot-bob">
+                      <span class="captain__parrot-wing"></span>
+                      <span class="captain__parrot-beak"></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="sender-set theme-stage theme-stage--valentine">
+                  <div class="love-stage">
+                    <div class="love-stage__glow"></div>
+                    <div class="love-stage__floor"></div>
+                    <div class="bloom-arch bloom-arch--stage bloom-float">
+                      <div class="bloom-arch__halo"></div>
+                      <div class="bloom-arch__heart bloom-arch__heart--large"></div>
+                      <div class="bloom-arch__heart bloom-arch__heart--small"></div>
+                      <div class="balloon-bunch balloon-bunch--stage">
+                        <span class="balloon balloon--one"></span>
+                        <span class="balloon balloon--two"></span>
+                        <span class="balloon balloon--three"></span>
+                      </div>
+                      <div class="love-letter"></div>
+                      <div class="confetti-cluster confetti-cluster--stage"></div>
+                      <div class="bloom-arch__pedestal"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="sender-set theme-stage theme-stage--mothers-day">
+                  <div class="tribute-stage">
+                    <div class="tribute-stage__floor"></div>
+                    <div class="tribute-vase tribute-vase--stage tribute-float">
+                      <div class="tribute-vase__glow"></div>
+                      <div class="tribute-vase__bouquet"></div>
+                      <div class="tribute-vase__gift"></div>
+                      <div class="memory-frame memory-frame--one"></div>
+                      <div class="memory-frame memory-frame--two"></div>
+                      <div class="joy-orb joy-orb--one"></div>
+                      <div class="joy-orb joy-orb--two"></div>
+                      <div class="flower-burst flower-burst--stage"></div>
+                    </div>
+                  </div>
+                </div>
                 <div class="orbital orbital--a"></div>
                 <div class="orbital orbital--b"></div>
                 <div class="world-card glass-card">
@@ -152,6 +328,24 @@
               </div>
 
               <div class="world journey-world">
+                <div class="journey-portal journey-portal--left"></div>
+                <div class="journey-portal journey-portal--right"></div>
+                <div class="journey-streaks">
+                  <span class="journey-streak"></span>
+                  <span class="journey-streak"></span>
+                  <span class="journey-streak"></span>
+                  <span class="journey-streak"></span>
+                  <span class="journey-streak"></span>
+                  <span class="journey-streak"></span>
+                </div>
+                <div class="journey-cloud journey-cloud--one"></div>
+                <div class="journey-cloud journey-cloud--two"></div>
+                <div class="journey-cloud journey-cloud--three"></div>
+                <div class="journey-compass">
+                  <div class="journey-compass__ring"></div>
+                  <div class="journey-compass__needle"></div>
+                </div>
+                <div class="journey-swell"></div>
                 <svg class="journey-path" viewBox="0 0 1000 420" fill="none">
                   <defs>
                     <linearGradient id="journeyGradient" x1="50" x2="950" y1="40" y2="360">
@@ -198,6 +392,33 @@
               </div>
 
               <div class="world receiver-world">
+                <div class="receiver-scene receiver-scene--pirate">
+                  <div class="receiver-scene__dock"></div>
+                  <div class="receiver-scene__figure"></div>
+                  <div class="receiver-scene__telescope"></div>
+                  <div class="receiver-scene__palm receiver-scene__palm--one"></div>
+                  <div class="receiver-scene__palm receiver-scene__palm--two"></div>
+                </div>
+                <div class="receiver-scene receiver-scene--valentine">
+                  <div class="receiver-scene__floor"></div>
+                  <div class="receiver-scene__figure receiver-scene__figure--valentine"></div>
+                  <div class="receiver-scene__balloon-balloon balloon-bunch balloon-bunch--receiver">
+                    <span class="balloon balloon--one"></span>
+                    <span class="balloon balloon--two"></span>
+                    <span class="balloon balloon--three"></span>
+                  </div>
+                  <div class="receiver-scene__heart-gate"></div>
+                  <div class="receiver-scene__rose receiver-scene__rose--one"></div>
+                  <div class="receiver-scene__rose receiver-scene__rose--two"></div>
+                </div>
+                <div class="receiver-scene receiver-scene--mothers-day">
+                  <div class="receiver-scene__floor receiver-scene__floor--warm"></div>
+                  <div class="receiver-scene__figure receiver-scene__figure--warm"></div>
+                  <div class="receiver-scene__bouquet receiver-scene__bouquet--one"></div>
+                  <div class="receiver-scene__bouquet receiver-scene__bouquet--two"></div>
+                  <div class="receiver-scene__memory-ray"></div>
+                  <div class="receiver-scene__gift-stack"></div>
+                </div>
                 <div class="receiver-beacon"></div>
                 <div class="receiver-halo"></div>
                 <div class="world-card glass-card">
@@ -213,6 +434,31 @@
               </div>
 
               <div class="world reveal-world">
+                <div class="reveal-flash"></div>
+                <div class="reveal-beam reveal-beam--left"></div>
+                <div class="reveal-beam reveal-beam--right"></div>
+                <div class="reveal-shockwave reveal-shockwave--one"></div>
+                <div class="reveal-shockwave reveal-shockwave--two"></div>
+                <div class="spark-rain" id="spark-rain"></div>
+                <div class="reveal-confetti" id="reveal-confetti"></div>
+                <div class="reveal-flourish reveal-flourish--pirate">
+                  <div class="coin-ring coin-ring--left"></div>
+                  <div class="coin-ring coin-ring--right"></div>
+                </div>
+                <div class="reveal-flourish reveal-flourish--valentine">
+                  <div class="heart-orbit heart-orbit--left"></div>
+                  <div class="heart-orbit heart-orbit--right"></div>
+                  <div class="balloon-bunch balloon-bunch--reveal">
+                    <span class="balloon balloon--one"></span>
+                    <span class="balloon balloon--two"></span>
+                    <span class="balloon balloon--three"></span>
+                  </div>
+                </div>
+                <div class="reveal-flourish reveal-flourish--mothers-day">
+                  <div class="flower-burst flower-burst--reveal"></div>
+                  <div class="joy-orb joy-orb--reveal-left"></div>
+                  <div class="joy-orb joy-orb--reveal-right"></div>
+                </div>
                 <div class="gift-pedestal"></div>
                 <div class="gift-vault">
                   <div class="gift-vault__lid"></div>
