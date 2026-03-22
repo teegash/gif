@@ -1,0 +1,20 @@
+FROM node:20-alpine
+
+WORKDIR /app
+
+COPY package.json /app/package.json
+COPY apps/backend/package.json /app/apps/backend/package.json
+COPY packages/shared-types/package.json /app/packages/shared-types/package.json
+
+RUN npm install
+
+COPY . /app
+
+WORKDIR /app/apps/backend
+
+RUN npm run build
+
+EXPOSE 3001
+
+CMD ["npm", "run", "start"]
+

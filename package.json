@@ -1,0 +1,19 @@
+{
+  "name": "sentiment-watchlist",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Forex and crypto sentiment-weighted watchlist monorepo",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:frontend": "npm --workspace apps/frontend run dev",
+    "dev:backend": "npm --workspace apps/backend run dev",
+    "build:frontend": "npm --workspace apps/frontend run build",
+    "build:backend": "npm --workspace apps/backend run build",
+    "test:frontend": "npm --workspace apps/frontend run test",
+    "test:backend": "npm --workspace apps/backend run test"
+  }
+}
+

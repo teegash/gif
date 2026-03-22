@@ -1,0 +1,179 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String           @id @default(uuid())
+  email        String           @unique
+  passwordHash String
+  displayName  String?
+  baseCurrency String           @default("USD")
+  timezone     String           @default("UTC")
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  watchlists   Watchlist[]
+  tradeEntries TradeEntry[]
+  alerts       Alert[]
+  preferences  UserPreferences?
+}
+
+model UserPreferences {
+  id                   String  @id @default(uuid())
+  userId               String  @unique
+  user                 User    @relation(fields: [userId], references: [id])
+  divergenceThreshold  Float   @default(0.6)
+  priceChangeThreshold Float   @default(0.02)
+  darkMode             Boolean @default(true)
+  defaultChartWindow   String  @default("24h")
+  emailAlertsEnabled   Boolean @default(false)
+}
+
+model Watchlist {
+  id        String          @id @default(uuid())
+  userId    String
+  user      User            @relation(fields: [userId], references: [id])
+  name      String          @default("My Watchlist")
+  createdAt DateTime        @default(now())
+  assets    WatchlistAsset[]
+}
+
+model WatchlistAsset {
+  id          String    @id @default(uuid())
+  watchlistId String
+  watchlist   Watchlist @relation(fields: [watchlistId], references: [id])
+  symbol      String
+  assetType   AssetType
+  coinGeckoId String?
+  displayName String
+  addedAt     DateTime  @default(now())
+  position    Int       @default(0)
+
+  @@unique([watchlistId, symbol])
+}
+
+enum AssetType {
+  CRYPTO
+  FOREX
+}
+
+model PriceSnapshot {
+  id                 String    @id @default(uuid())
+  symbol             String
+  assetType          AssetType
+  price              Float
+  priceChange24h     Float?
+  priceChangePercent24h Float?
+  volume24h          Float?
+  marketCap          Float?
+  currency           String    @default("USD")
+  capturedAt         DateTime  @default(now())
+
+  @@index([symbol, capturedAt])
+}
+
+model NewsArticle {
+  id             String    @id @default(uuid())
+  symbol         String
+  headline       String
+  description    String?
+  url            String    @unique
+  source         String
+  sourceName     String
+  publishedAt    DateTime
+  fetchedAt      DateTime  @default(now())
+  sentimentScore Float?
+  sentimentLabel String?
+  compound       Float?
+  positiveScore  Float?
+  neutralScore   Float?
+  negativeScore  Float?
+  scoredAt       DateTime?
+
+  @@index([symbol, publishedAt])
+}
+
+model SentimentSnapshot {
+  id            String   @id @default(uuid())
+  symbol        String
+  windowHours   Int
+  avgScore      Float
+  positiveCount Int
+  negativeCount Int
+  neutralCount  Int
+  articleCount  Int
+  dominantLabel String
+  capturedAt    DateTime @default(now())
+
+  @@index([symbol, capturedAt])
+}
+
+model TradeEntry {
+  id                  String      @id @default(uuid())
+  userId              String
+  user                User        @relation(fields: [userId], references: [id])
+  symbol              String
+  assetType           AssetType
+  direction           Direction
+  entryPrice          Float
+  exitPrice           Float?
+  quantity            Float
+  currency            String      @default("USD")
+  entryAt             DateTime
+  exitAt              DateTime?
+  status              TradeStatus @default(OPEN)
+  notes               String?
+  tags                String[]
+  pnl                 Float?
+  pnlPercent          Float?
+  riskRewardRatio     Float?
+  stopLoss            Float?
+  takeProfit          Float?
+  createdAt           DateTime    @default(now())
+  updatedAt           DateTime    @updatedAt
+  sentimentAtEntry    Float?
+  sentimentLabelEntry String?
+  articleCountEntry   Int?
+  sentimentAtExit     Float?
+  sentimentLabelExit  String?
+  divergenceFlagEntry Boolean     @default(false)
+  divergenceNoteEntry String?
+
+  @@index([userId, entryAt])
+}
+
+enum Direction {
+  LONG
+  SHORT
+}
+
+enum TradeStatus {
+  OPEN
+  CLOSED
+  CANCELLED
+}
+
+model Alert {
+  id          String    @id @default(uuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+  symbol      String
+  alertType   AlertType
+  threshold   Float
+  triggered   Boolean   @default(false)
+  triggeredAt DateTime?
+  createdAt   DateTime  @default(now())
+  message     String?
+}
+
+enum AlertType {
+  DIVERGENCE
+  SENTIMENT_DROP
+  PRICE_CHANGE
+  SENTIMENT_SHIFT
+}
+
