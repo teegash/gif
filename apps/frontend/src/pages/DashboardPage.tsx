@@ -141,7 +141,7 @@ export default function DashboardPage() {
               className="mt-4 w-full rounded-2xl border border-white/10 bg-slate-950/60 px-4 py-3 text-white outline-none transition focus:border-teal-300/50"
             />
             <div className="mt-4 space-y-3">
-              {(searchQuery.data?.results || []).slice(0, 5).map((result: any) => (
+              {(searchQuery.data?.results || []).slice(0, 5).map((result) => (
                 <div key={result.symbol} className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
                   <div>
                     <p className="text-sm font-medium text-white">{result.symbol}</p>

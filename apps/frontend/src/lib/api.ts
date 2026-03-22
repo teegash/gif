@@ -1,5 +1,13 @@
 import axios from "axios";
-import { AuthResponse, TradeEntry } from "@sentiment-watchlist/shared-types";
+import {
+  AssetDetailResponse,
+  AssetSearchResult,
+  AuthResponse,
+  JournalAnalytics,
+  TradeEntry,
+  UserProfile,
+  WatchlistAsset,
+} from "@sentiment-watchlist/shared-types";
 import { demoApi } from "./demoApi";
 
 const client = axios.create({
@@ -39,7 +47,7 @@ export const api = {
     );
   },
 
-  async me() {
+  async me(): Promise<{ user: UserProfile | null }> {
     return fallback(
       async () => (await client.get("/auth/me")).data,
       () => demoApi.me()
@@ -53,63 +61,63 @@ export const api = {
     );
   },
 
-  async getWatchlist() {
+  async getWatchlist(): Promise<{ assets: WatchlistAsset[] }> {
     return fallback(
       async () => (await client.get("/watchlist")).data,
       () => demoApi.getWatchlist()
     );
   },
 
-  async searchAssets(query: string) {
+  async searchAssets(query: string): Promise<{ results: AssetSearchResult[] }> {
     return fallback(
       async () => (await client.get("/watchlist/search", { params: { q: query } })).data,
       () => demoApi.searchAssets(query)
     );
   },
 
-  async addWatchlistAsset(payload: { symbol: string; assetType: "CRYPTO" | "FOREX"; displayName: string; coinGeckoId?: string }) {
+  async addWatchlistAsset(payload: AssetSearchResult): Promise<{ asset: AssetSearchResult | WatchlistAsset }> {
     return fallback(
       async () => (await client.post("/watchlist/assets", payload)).data,
       () => demoApi.addWatchlistAsset(payload)
     );
   },
 
-  async removeWatchlistAsset(id: string) {
+  async removeWatchlistAsset(id: string): Promise<{ success: boolean }> {
     return fallback(
       async () => (await client.delete(`/watchlist/assets/${id}`)).data,
       () => demoApi.removeWatchlistAsset(id)
     );
   },
 
-  async getAssetDetail(symbol: string, window: "24h" | "7d") {
+  async getAssetDetail(symbol: string, window: "24h" | "7d"): Promise<AssetDetailResponse> {
     return fallback(
       async () => (await client.get(`/assets/${encodeURIComponent(symbol)}`, { params: { window } })).data,
       () => demoApi.getAssetDetail(symbol)
     );
   },
 
-  async getTrades() {
+  async getTrades(): Promise<{ trades: TradeEntry[] }> {
     return fallback(
       async () => (await client.get("/journal/trades")).data,
       () => demoApi.getTrades()
     );
   },
 
-  async createTrade(payload: Partial<TradeEntry>) {
+  async createTrade(payload: Partial<TradeEntry>): Promise<TradeEntry> {
     return fallback(
       async () => (await client.post("/journal/trade", payload)).data,
       () => demoApi.createTrade(payload)
     );
   },
 
-  async closeTrade(id: string, exitPrice: number, exitAt: string) {
+  async closeTrade(id: string, exitPrice: number, exitAt: string): Promise<TradeEntry> {
     return fallback(
       async () => (await client.patch(`/journal/trade/${id}/close`, { exitPrice, exitAt })).data,
       () => demoApi.closeTrade(id, exitPrice, exitAt)
     );
   },
 
-  async getAnalytics() {
+  async getAnalytics(): Promise<JournalAnalytics> {
     return fallback(
       async () => (await client.get("/journal/analytics")).data,
       () => demoApi.getAnalytics()

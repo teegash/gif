@@ -83,6 +83,13 @@ export interface WatchlistAsset {
   recentNews: NewsArticle[];
 }
 
+export interface AssetSearchResult {
+  symbol: string;
+  assetType: AssetType;
+  displayName: string;
+  coinGeckoId?: string;
+}
+
 export interface UserProfile {
   id: string;
   email: string;

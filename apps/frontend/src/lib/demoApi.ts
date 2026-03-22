@@ -1,9 +1,9 @@
 import {
+  AssetSearchResult,
   AssetDetailResponse,
   AuthResponse,
   ChartPoint,
   JournalAnalytics,
-  SentimentSnapshot,
   TradeEntry,
   WatchlistAsset,
 } from "@sentiment-watchlist/shared-types";
@@ -150,7 +150,7 @@ let watchlistAssets: WatchlistAsset[] = [
   },
 ];
 
-const searchCatalog = [
+const searchCatalog: AssetSearchResult[] = [
   { symbol: "BTC", assetType: "CRYPTO" as const, displayName: "Bitcoin", coinGeckoId: "bitcoin" },
   { symbol: "ETH", assetType: "CRYPTO" as const, displayName: "Ethereum", coinGeckoId: "ethereum" },
   { symbol: "SOL", assetType: "CRYPTO" as const, displayName: "Solana", coinGeckoId: "solana" },
