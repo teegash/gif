@@ -57,6 +57,26 @@ uvicorn main:app --app-dir apps/sentiment-engine --reload --port 8000
 docker compose -f infra/docker/docker-compose.yml up --build
 ```
 
+## Netlify Deployment
+
+This repo is a monorepo, so Netlify must build the frontend app and publish its `dist` folder rather than the repo root.
+
+The repository now includes:
+
+- [netlify.toml](c:/Users/noble/gif/netlify.toml) with:
+  - build command: `npm run build:frontend`
+  - publish directory: `apps/frontend/dist`
+  - SPA fallback redirect for React Router
+- [apps/frontend/public/_redirects](c:/Users/noble/gif/apps/frontend/public/_redirects) with `/* /index.html 200`
+
+If the Netlify site is already connected, trigger a redeploy after pulling these changes.
+
+Required frontend environment variable on Netlify:
+
+```bash
+VITE_API_URL=https://your-backend-domain/api
+```
+
 ## Environment Notes
 
 This Codex session did not have `node`, `npm`, or a working Python runtime available locally, so the repository was implemented thoroughly but not executed end-to-end inside this environment. The codebase is set up to run once those runtimes are installed.
