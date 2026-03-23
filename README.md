@@ -80,6 +80,62 @@ Required frontend environment variable on Netlify:
 VITE_API_URL=https://your-backend-domain/api
 ```
 
+Recommended frontend production settings:
+
+```bash
+VITE_API_URL=https://your-backend-domain/api
+VITE_ENABLE_DEMO_FALLBACK=false
+```
+
+## Production Wiring
+
+Use this setup if you want the deployed watchlist to show real market data instead of demo data.
+
+Backend service:
+
+```bash
+npm install
+npx prisma generate --schema apps/backend/prisma/schema.prisma
+npm run build:backend
+npm --workspace apps/backend run start
+```
+
+Sentiment engine service:
+
+```bash
+pip install -r apps/sentiment-engine/requirements.txt
+uvicorn main:app --app-dir apps/sentiment-engine --host 0.0.0.0 --port 8000
+```
+
+Backend production environment variables:
+
+```bash
+NODE_ENV=production
+PORT=3001
+FRONTEND_URL=https://your-netlify-site.netlify.app
+MOCK_MODE=false
+MOCK_MARKET_DATA=false
+DATABASE_URL=postgresql://...
+REDIS_URL=redis://...
+JWT_SECRET=use-a-long-random-secret
+JWT_EXPIRY=24h
+BCRYPT_ROUNDS=12
+SENTIMENT_ENGINE_URL=https://your-sentiment-engine-domain
+ALPHA_VANTAGE_KEY=...
+COINGECKO_API_KEY=...
+NEWSAPI_KEY=...
+GNEWS_KEY=...
+```
+
+Verification checks after deploy:
+
+```bash
+GET https://your-backend-domain/api/health
+GET https://your-sentiment-engine-domain/health
+```
+
+The backend health response should show `database`, `redis`, and `sentimentEngine` as `healthy` or `unknown` during startup, not `mock`, when you are running with live market data.
+
 Useful backend environment variables for live mode:
 
 ```bash

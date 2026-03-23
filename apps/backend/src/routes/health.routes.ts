@@ -13,7 +13,7 @@ router.get("/", async (_req, res) => {
     services: {
       database: config.mockMode ? "mock" : "unknown",
       redis: config.mockMode ? "mock" : "unknown",
-      sentimentEngine: config.mockMode ? "mock" : "unknown",
+      sentimentEngine: config.mockMarketData ? "mock" : "unknown",
     },
     quotas: {
       alphavantage: 0,
@@ -43,7 +43,7 @@ router.get("/", async (_req, res) => {
   }
 
   try {
-    if (!config.mockMode) {
+    if (!config.mockMarketData) {
       await axios.get(`${config.sentimentEngineUrl}/health`, { timeout: 3000 });
       checks.services.sentimentEngine = "healthy";
     }
@@ -63,4 +63,3 @@ router.get("/", async (_req, res) => {
 });
 
 export default router;
-
