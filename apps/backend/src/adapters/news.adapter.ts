@@ -94,10 +94,16 @@ export async function fetchNewsForSymbol(
   const catalog = assetCatalog.find((entry) => entry.symbol === symbol);
   const resolvedKeywords = keywords || catalog?.newsKeywords || [symbol];
 
-  if (config.mockMode || (!config.newsApiKey && !config.gnewsKey)) {
+  if (config.mockMarketData) {
     const articles = generateNews(symbol, windowHours === 24 ? 6 : 10);
     await redisClient.setex(cacheKey, CACHE_TTL, JSON.stringify(articles));
     return articles;
+  }
+
+  if (!config.newsApiKey && !config.gnewsKey) {
+    logger.warn(`[News] No live news provider configured for ${symbol}`);
+    await redisClient.setex(cacheKey, CACHE_TTL, JSON.stringify([]));
+    return [];
   }
 
   let articles: NewsArticle[] = [];

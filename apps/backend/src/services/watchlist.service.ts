@@ -6,7 +6,6 @@ import {
   assetCatalog,
   demoWatchlistId,
   generateChartSeries,
-  generateSentiment,
   mockWatchlistAssets,
   mockWatchlists,
 } from "../data/mock-data";
@@ -19,22 +18,45 @@ function getUserWatchlistId(userId: string) {
   return mockWatchlists.find((watchlist) => watchlist.userId === userId)?.id || demoWatchlistId;
 }
 
-function withSentimentOverlay(symbol: string, window: ChartWindow, points: Array<{ timestamp: number; price: number }>) {
-  const baseSentiment = generateSentiment(symbol, window === "24h" ? 24 : 168).avgScore;
+function classifySentiment(score: number | null) {
+  if (score === null) return undefined;
+  if (score > 0.05) return "positive";
+  if (score < -0.05) return "negative";
+  return "neutral";
+}
 
+function withSentimentOverlay(
+  points: Array<{ timestamp: number; price: number }>,
+  sentimentScore: number | null
+) {
   return points.map((point, index) => {
-    const sentimentScore = Number(
-      Math.max(-1, Math.min(1, baseSentiment + Math.sin(index * 0.75 + symbol.length) * 0.08)).toFixed(3)
-    );
+    const resolvedScore =
+      config.mockMarketData && sentimentScore !== null
+        ? Number(
+            Math.max(-1, Math.min(1, sentimentScore + Math.sin(index * 0.75) * 0.08)).toFixed(3)
+          )
+        : sentimentScore;
 
     return {
       timestamp: point.timestamp,
       price: point.price,
-      sentimentScore,
-      sentimentLabel:
-        sentimentScore > 0.05 ? "positive" : sentimentScore < -0.05 ? "negative" : "neutral",
+      sentimentScore: resolvedScore,
+      sentimentLabel: classifySentiment(resolvedScore),
     };
   });
+}
+
+function buildFallbackChart(window: ChartWindow, price: number | null, sentimentScore: number | null) {
+  const points = window === "24h" ? 24 : 7;
+  const stepMs = window === "24h" ? 60 * 60 * 1000 : 24 * 60 * 60 * 1000;
+  const fallbackPrice = price ?? 0;
+
+  return Array.from({ length: points }, (_, index) => ({
+    timestamp: Date.now() - (points - index) * stepMs,
+    price: fallbackPrice,
+    sentimentScore,
+    sentimentLabel: classifySentiment(sentimentScore),
+  }));
 }
 
 async function getLatestPrice(symbol: string, assetType: AssetType, coinGeckoId?: string) {
@@ -186,8 +208,10 @@ export async function getAssetDetail(symbol: string, window: ChartWindow): Promi
 
   const chart =
     historicalPoints.length > 0
-      ? withSentimentOverlay(symbol, window, historicalPoints)
-      : generateChartSeries(symbol, catalog.assetType, window);
+      ? withSentimentOverlay(historicalPoints, asset.sentimentSnapshot?.avgScore ?? null)
+      : config.mockMarketData
+        ? generateChartSeries(symbol, catalog.assetType, window)
+        : buildFallbackChart(window, asset.priceData?.price ?? null, asset.sentimentSnapshot?.avgScore ?? null);
 
   const sentimentHistory = chart.map((point) => ({
     timestamp: point.timestamp,

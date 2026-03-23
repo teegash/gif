@@ -1,13 +1,13 @@
 import { FormEvent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ShieldCheck } from "lucide-react";
-import { api } from "../lib/api";
-import { demoApi } from "../lib/demoApi";
+import { api, isDemoFallbackEnabled } from "../lib/api";
 import { useAuthStore } from "../store/auth.store";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState(demoApi.demoCredentials.email);
-  const [password, setPassword] = useState(demoApi.demoCredentials.password);
+  const demoFallbackEnabled = isDemoFallbackEnabled();
+  const [email, setEmail] = useState(demoFallbackEnabled ? "demo@example.com" : "");
+  const [password, setPassword] = useState(demoFallbackEnabled ? "DemoPass123!" : "");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const setSession = useAuthStore((state) => state.setSession);
@@ -50,7 +50,9 @@ export default function LoginPage() {
           <p className="text-xs uppercase tracking-[0.28em] text-slate-400">Sign in</p>
           <h2 className="mt-3 text-3xl font-semibold text-white">Welcome back</h2>
           <p className="mt-2 text-sm text-slate-400">
-            Demo credentials are prefilled so you can explore the full flow immediately.
+            {demoFallbackEnabled
+              ? "Demo credentials are prefilled because demo fallback is enabled for this environment."
+              : "Sign in to load your real watchlist and live market data."}
           </p>
 
           <form className="mt-8 space-y-4" onSubmit={handleSubmit}>
@@ -95,4 +97,3 @@ export default function LoginPage() {
     </div>
   );
 }
-

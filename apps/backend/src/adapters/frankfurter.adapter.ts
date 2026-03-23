@@ -95,7 +95,7 @@ export async function getFxQuoteFromFrankfurter(
     return JSON.parse(cached) as PriceData;
   }
 
-  if (config.mockMode) {
+  if (config.mockMarketData) {
     const mockPrice = generatePrice(symbol, "FOREX");
     await redisClient.setex(cacheKey, CACHE_TTL, JSON.stringify(mockPrice));
     return mockPrice;
@@ -152,7 +152,7 @@ export async function getFxHistoricalPricesFromFrankfurter(
     return JSON.parse(cached) as HistoricalPricePoint[];
   }
 
-  if (config.mockMode) {
+  if (config.mockMarketData) {
     const mockHistory = generateChartSeries(symbol, "FOREX", window).map((point) => ({
       timestamp: point.timestamp,
       price: point.price,
@@ -216,11 +216,11 @@ export async function getFxLatestRates(
       base,
       date: toIsoDate(new Date()),
       rates: {},
-      provider: config.mockMode ? "mock" : "frankfurter",
+      provider: config.mockMarketData ? "mock" : "frankfurter",
     };
   }
 
-  if (config.mockMode) {
+  if (config.mockMarketData) {
     const rates = Object.fromEntries(
       uniqueTargets.map((target) => [target, generatePrice(buildSymbol(base, target), "FOREX").price])
     );
@@ -263,7 +263,7 @@ export async function convertFxAmount(
     return JSON.parse(cached) as FxConversionResponse;
   }
 
-  if (config.mockMode) {
+  if (config.mockMarketData) {
     const rate = generatePrice(buildSymbol(base, target), "FOREX").price;
     const mockResponse: FxConversionResponse = {
       amount,
@@ -318,7 +318,7 @@ export async function getFxTimeSeries(
     return JSON.parse(cached) as FxTimeSeriesResponse;
   }
 
-  if (config.mockMode) {
+  if (config.mockMarketData) {
     const points = generateChartSeries(buildSymbol(base, target), "FOREX", "7d")
       .map((point) => ({
         date: toIsoDate(new Date(point.timestamp)),

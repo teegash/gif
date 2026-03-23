@@ -48,7 +48,7 @@ export async function getCryptoPrices(coinIds: string[]): Promise<Record<string,
     return results;
   }
 
-  if (config.mockMode) {
+  if (config.mockMarketData) {
     for (const id of uncached) {
       const asset = assetCatalog.find((entry) => entry.coinGeckoId === id || entry.symbol.toLowerCase() === id);
       if (!asset) continue;
@@ -109,7 +109,7 @@ export async function getCryptoHistoricalPrices(coinId: string, days: 1 | 7): Pr
   const asset = assetCatalog.find((entry) => entry.coinGeckoId === coinId || entry.symbol.toLowerCase() === coinId);
   if (!asset) return [];
 
-  if (config.mockMode) {
+  if (config.mockMarketData) {
     const history = generateChartSeries(asset.symbol, "CRYPTO", days === 1 ? "24h" : "7d").map((point) => ({
       timestamp: point.timestamp,
       price: point.price,

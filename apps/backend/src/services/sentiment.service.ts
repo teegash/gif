@@ -67,7 +67,7 @@ export async function computeSentimentForSymbol(
     return JSON.parse(cached) as SentimentSnapshot;
   }
 
-  if (config.mockMode) {
+  if (config.mockMarketData) {
     const snapshot = generateSentiment(symbol, windowHours);
     const history = sentimentHistoryStore.get(symbol) || [];
     history.push(snapshot);

@@ -65,9 +65,11 @@ export async function getForexRate(fromCurrency: string, toCurrency: string): Pr
     return JSON.parse(cached) as PriceData;
   }
 
-  if (config.mockMode || !config.alphaVantageKey) {
+  if (config.mockMarketData || !config.alphaVantageKey) {
     const fallback =
-      config.mockMode ? generatePrice(symbol, "FOREX") : await getFxQuoteFromFrankfurter(fromCurrency, toCurrency);
+      config.mockMarketData
+        ? generatePrice(symbol, "FOREX")
+        : await getFxQuoteFromFrankfurter(fromCurrency, toCurrency);
     if (fallback) {
       await redisClient.setex(cacheKey, CACHE_TTL, JSON.stringify(fallback));
     }
@@ -134,7 +136,7 @@ export async function getForexHistoricalPrices(
     return JSON.parse(cached) as HistoricalPricePoint[];
   }
 
-  if (config.mockMode) {
+  if (config.mockMarketData) {
     const mockHistory = generateChartSeries(symbol, "FOREX", window).map((point) => ({
       timestamp: point.timestamp,
       price: point.price,

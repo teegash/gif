@@ -24,15 +24,16 @@ This repository implements the markdown blueprint as a monorepo with:
 - Python sentiment scoring service with tests
 - Prisma schema, Docker files, and CI workflow
 
-## Mock Mode
+## Data Modes
 
-The backend and frontend both support a mock-first path so the project remains usable before external services are connected:
+The project supports separate switches for storage/auth mocking and market-data mocking:
 
-- Set `MOCK_MODE=true` in `.env`
-- The backend serves in-memory users, watchlists, trades, prices, and sentiment
-- The mock asset universe now includes a broader crypto and forex watchlist, including majors like `EUR/USD`, `USD/JPY`, `AUD/USD`, `USD/CAD`, and `USD/KES`
-- The frontend also falls back to a local demo API when the backend is unavailable
-- Demo login: `demo@example.com` / `DemoPass123!`
+- `MOCK_MODE=false` keeps auth, sessions, journal, and watchlists on the real backend by default
+- `MOCK_MARKET_DATA=false` keeps watchlist prices, FX rates, charts, news, and sentiment on live providers by default
+- `VITE_ENABLE_DEMO_FALLBACK=false` prevents the frontend from silently swapping to demo data when the backend is unreachable
+- If you want easier setup but still want real watchlist data, use `MOCK_MODE=true` together with `MOCK_MARKET_DATA=false`
+- If you explicitly enable demo mode, the mock asset universe includes a broader crypto and forex watchlist, including majors like `EUR/USD`, `USD/JPY`, `AUD/USD`, `USD/CAD`, and `USD/KES`
+- Demo login is only relevant when demo fallback is enabled: `demo@example.com` / `DemoPass123!`
 
 ## Quick Start
 
@@ -97,6 +98,6 @@ This Codex session did not have `node`, `npm`, or a working Python runtime avail
 
 1. Install Node.js and Python on the machine.
 2. Run `npm install` from the repo root.
-3. Start the backend and frontend in `MOCK_MODE=true` first.
-4. Add real API keys, PostgreSQL, and Redis next.
-5. Run Prisma migrations and switch `MOCK_MODE=false`.
+3. Keep `MOCK_MODE=false`, `MOCK_MARKET_DATA=false`, and `VITE_ENABLE_DEMO_FALLBACK=false` if you want only real watchlist data.
+4. Add real API keys, PostgreSQL, and Redis.
+5. Run Prisma migrations, then start the backend, frontend, and sentiment engine.

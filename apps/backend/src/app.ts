@@ -38,6 +38,7 @@ export function createApp() {
       name: "Sentiment Watchlist API",
       status: "ok",
       mockMode: config.mockMode,
+      mockMarketData: config.mockMarketData,
     });
   });
 
