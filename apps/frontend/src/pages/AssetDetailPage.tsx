@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
+import { AssetDetailResponse } from "@sentiment-watchlist/shared-types";
 import DivergenceBanner from "../components/DivergenceBanner";
 import DualAxisChart from "../components/DualAxisChart";
 import NewsPanel from "../components/NewsPanel";
@@ -14,7 +15,7 @@ export default function AssetDetailPage() {
   const setChartWindow = useWatchlistStore((state) => state.setChartWindow);
   const decodedSymbol = decodeURIComponent(symbol);
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading } = useQuery<AssetDetailResponse>({
     queryKey: ["asset-detail", decodedSymbol, chartWindow],
     queryFn: () => api.getAssetDetail(decodedSymbol, chartWindow),
   });
@@ -84,4 +85,3 @@ export default function AssetDetailPage() {
     </div>
   );
 }
-

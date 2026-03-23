@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
+import { AssetSearchResult, NewsArticle, WatchlistAsset } from "@sentiment-watchlist/shared-types";
 import { useDashboardData } from "../hooks/useDashboardData";
 import { api } from "../lib/api";
 import KpiStrip from "../components/KpiStrip";
@@ -15,22 +16,21 @@ export default function DashboardPage() {
   const { data, isLoading } = useDashboardData();
   const [search, setSearch] = useState("");
 
-  const assets = data?.assets || [];
+  const assets: WatchlistAsset[] = data?.assets ?? [];
   useEffect(() => {
     if (assets.length) {
       setAssets(assets);
     }
   }, [assets, setAssets]);
 
-  const searchQuery = useQuery({
+  const searchQuery = useQuery<{ results: AssetSearchResult[] }>({
     queryKey: ["asset-search", search],
     queryFn: () => api.searchAssets(search),
     enabled: search.trim().length >= 2,
   });
 
   const addMutation = useMutation({
-    mutationFn: (payload: { symbol: string; assetType: "CRYPTO" | "FOREX"; displayName: string; coinGeckoId?: string }) =>
-      api.addWatchlistAsset(payload),
+    mutationFn: (payload: AssetSearchResult) => api.addWatchlistAsset(payload),
     onSuccess: async () => {
       setSearch("");
       await queryClient.invalidateQueries({ queryKey: ["watchlist"] });
@@ -69,7 +69,7 @@ export default function DashboardPage() {
     ];
   }, [assets]);
 
-  const topArticles = assets.flatMap((asset) => asset.recentNews.slice(0, 1)).slice(0, 4);
+  const topArticles: NewsArticle[] = assets.flatMap((asset) => asset.recentNews.slice(0, 1)).slice(0, 4);
 
   return (
     <div className="space-y-6 pb-10">

@@ -1,3 +1,4 @@
+import { JournalAnalytics, TradeEntry } from "@sentiment-watchlist/shared-types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import KpiStrip from "../components/KpiStrip";
 import JournalTable from "../components/JournalTable";
@@ -6,17 +7,17 @@ import { api } from "../lib/api";
 
 export default function JournalPage() {
   const queryClient = useQueryClient();
-  const tradesQuery = useQuery({
+  const tradesQuery = useQuery<{ trades: TradeEntry[] }>({
     queryKey: ["journal-trades"],
     queryFn: () => api.getTrades(),
   });
-  const analyticsQuery = useQuery({
+  const analyticsQuery = useQuery<JournalAnalytics>({
     queryKey: ["journal-analytics"],
     queryFn: () => api.getAnalytics(),
   });
 
   const createMutation = useMutation({
-    mutationFn: (payload: any) => api.createTrade(payload),
+    mutationFn: (payload: Partial<TradeEntry>) => api.createTrade(payload),
     onSuccess: async () => {
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ["journal-trades"] }),
