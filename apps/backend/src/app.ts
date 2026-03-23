@@ -7,6 +7,7 @@ import { config } from "./config";
 import { errorMiddleware } from "./middleware/error.middleware";
 import assetRoutes from "./routes/assets.routes";
 import authRoutes from "./routes/auth.routes";
+import fxRoutes from "./routes/fx.routes";
 import healthRoutes from "./routes/health.routes";
 import journalRoutes from "./routes/journal.routes";
 import watchlistRoutes from "./routes/watchlist.routes";
@@ -44,9 +45,9 @@ export function createApp() {
   app.use("/api/health", healthRoutes);
   app.use("/api/watchlist", watchlistRoutes);
   app.use("/api/assets", assetRoutes);
+  app.use("/api/fx", fxRoutes);
   app.use("/api/journal", journalRoutes);
 
   app.use(errorMiddleware);
   return app;
 }
-

@@ -5,8 +5,31 @@ import { assetCatalog, generateChartSeries, generatePrice } from "../data/mock-d
 import { redisClient } from "../lib/redis";
 import logger from "../lib/logger";
 
-const BASE_URL = "https://api.coingecko.com/api/v3";
 const CACHE_TTL = 55;
+
+function getCoinGeckoHeaders() {
+  if (!config.coinGeckoApiKey) {
+    return undefined;
+  }
+
+  return {
+    [config.coinGeckoApiKeyHeader]: config.coinGeckoApiKey,
+  };
+}
+
+function computeAbsoluteChange(currentPrice: number, changePercent: number | null | undefined) {
+  if (changePercent === null || changePercent === undefined) {
+    return null;
+  }
+
+  const denominator = 1 + changePercent / 100;
+  if (denominator === 0) {
+    return null;
+  }
+
+  const previousPrice = currentPrice / denominator;
+  return Number((currentPrice - previousPrice).toFixed(2));
+}
 
 export async function getCryptoPrices(coinIds: string[]): Promise<Record<string, PriceData>> {
   const results: Record<string, PriceData> = {};
@@ -37,7 +60,8 @@ export async function getCryptoPrices(coinIds: string[]): Promise<Record<string,
   }
 
   try {
-    const response = await axios.get(`${BASE_URL}/simple/price`, {
+    const response = await axios.get(`${config.coinGeckoBaseUrl}/simple/price`, {
+      headers: getCoinGeckoHeaders(),
       params: {
         ids: uncached.join(","),
         vs_currencies: "usd",
@@ -57,7 +81,7 @@ export async function getCryptoPrices(coinIds: string[]): Promise<Record<string,
         symbol: asset.symbol,
         assetType: "CRYPTO",
         price: coinData.usd,
-        priceChange24h: coinData.usd_24h_change ?? null,
+        priceChange24h: computeAbsoluteChange(coinData.usd, coinData.usd_24h_change ?? null),
         priceChangePercent24h: coinData.usd_24h_change ?? null,
         volume24h: coinData.usd_24h_vol ?? null,
         marketCap: coinData.usd_market_cap ?? null,
@@ -95,7 +119,8 @@ export async function getCryptoHistoricalPrices(coinId: string, days: 1 | 7): Pr
   }
 
   try {
-    const response = await axios.get(`${BASE_URL}/coins/${coinId}/market_chart`, {
+    const response = await axios.get(`${config.coinGeckoBaseUrl}/coins/${coinId}/market_chart`, {
+      headers: getCoinGeckoHeaders(),
       params: {
         vs_currency: "usd",
         days,
@@ -115,4 +140,3 @@ export async function getCryptoHistoricalPrices(coinId: string, days: 1 | 7): Pr
     return [];
   }
 }
-

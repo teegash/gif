@@ -29,7 +29,7 @@ async function incrementQuota(source: "newsapi" | "gnews") {
 
 async function fetchFromNewsApi(keywords: string[], hoursBack: number) {
   const from = new Date(Date.now() - hoursBack * 60 * 60 * 1000).toISOString();
-  const response = await axios.get("https://newsapi.org/v2/everything", {
+  const response = await axios.get(`${config.newsApiBaseUrl}/everything`, {
     params: {
       q: keywords.join(" OR "),
       language: "en",
@@ -56,12 +56,12 @@ async function fetchFromNewsApi(keywords: string[], hoursBack: number) {
 }
 
 async function fetchFromGNews(keywords: string[]) {
-  const response = await axios.get("https://gnews.io/api/v4/search", {
+  const response = await axios.get(`${config.gnewsBaseUrl}/search`, {
     params: {
       q: keywords.join(" OR "),
       lang: "en",
       max: 10,
-      token: config.gnewsKey,
+      apikey: config.gnewsKey,
     },
     timeout: 10000,
   });

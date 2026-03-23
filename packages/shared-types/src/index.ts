@@ -90,6 +90,37 @@ export interface AssetSearchResult {
   coinGeckoId?: string;
 }
 
+export interface FxConversionResponse {
+  amount: number;
+  base: string;
+  target: string;
+  rate: number;
+  convertedAmount: number;
+  provider: string;
+  asOf: string;
+}
+
+export interface FxRatesResponse {
+  base: string;
+  date: string;
+  rates: Record<string, number>;
+  provider: string;
+}
+
+export interface FxTimeSeriesPoint {
+  date: string;
+  rate: number;
+}
+
+export interface FxTimeSeriesResponse {
+  base: string;
+  target: string;
+  startDate: string;
+  endDate: string;
+  points: FxTimeSeriesPoint[];
+  provider: string;
+}
+
 export interface UserProfile {
   id: string;
   email: string;

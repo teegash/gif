@@ -14,6 +14,7 @@ This repository implements the markdown blueprint as a monorepo with:
 - Auth routes: register, login, logout, current user
 - Watchlist routes: list, search, add, remove
 - Asset detail routes: chart, sentiment, and news drill-down
+- FX utility routes for latest rates, conversions, and historical time series
 - Divergence detection engine for price vs sentiment conflicts
 - Trade journal create, close, list, and analytics flow
 - Health endpoint with dependency and quota reporting
@@ -29,6 +30,7 @@ The backend and frontend both support a mock-first path so the project remains u
 
 - Set `MOCK_MODE=true` in `.env`
 - The backend serves in-memory users, watchlists, trades, prices, and sentiment
+- The mock asset universe now includes a broader crypto and forex watchlist, including majors like `EUR/USD`, `USD/JPY`, `AUD/USD`, `USD/CAD`, and `USD/KES`
 - The frontend also falls back to a local demo API when the backend is unavailable
 - Demo login: `demo@example.com` / `DemoPass123!`
 
@@ -75,6 +77,16 @@ Required frontend environment variable on Netlify:
 
 ```bash
 VITE_API_URL=https://your-backend-domain/api
+```
+
+Useful backend environment variables for live mode:
+
+```bash
+ALPHA_VANTAGE_KEY=...
+COINGECKO_API_KEY=...
+NEWSAPI_KEY=...
+GNEWS_KEY=...
+FRANKFURTER_BASE_URL=https://api.frankfurter.app
 ```
 
 ## Environment Notes

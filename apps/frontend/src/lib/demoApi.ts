@@ -3,7 +3,11 @@ import {
   AssetDetailResponse,
   AuthResponse,
   ChartPoint,
+  DivergenceAlert,
   JournalAnalytics,
+  PriceData,
+  SentimentLabel,
+  SentimentSnapshot,
   TradeEntry,
   WatchlistAsset,
 } from "@sentiment-watchlist/shared-types";
@@ -16,214 +20,400 @@ let demoUser = {
   displayName: "Demo Trader",
 };
 
-let watchlistAssets: WatchlistAsset[] = [
+type DemoCatalogEntry = AssetSearchResult & {
+  basePrice: number;
+  priceChangePercent24h: number;
+  baseSentiment: number;
+  volume24h: number | null;
+  marketCap: number | null;
+  keywords: string[];
+};
+
+const demoCatalog: DemoCatalogEntry[] = [
   {
-    id: "btc",
     symbol: "BTC",
     assetType: "CRYPTO",
     displayName: "Bitcoin",
     coinGeckoId: "bitcoin",
-    priceData: {
-      symbol: "BTC",
-      assetType: "CRYPTO",
-      price: 67240,
-      priceChange24h: 2150,
-      priceChangePercent24h: 3.31,
-      volume24h: 51234000000,
-      marketCap: 1320000000000,
-      currency: "USD",
-      capturedAt: new Date().toISOString(),
-    },
-    sentimentSnapshot: {
-      symbol: "BTC",
-      windowHours: 24,
-      avgScore: 0.38,
-      dominantLabel: "positive",
-      positiveCount: 10,
-      negativeCount: 3,
-      neutralCount: 3,
-      articleCount: 16,
-      capturedAt: new Date().toISOString(),
-    },
-    divergenceAlert: null,
-    recentNews: [],
+    basePrice: 67240,
+    priceChangePercent24h: 3.31,
+    baseSentiment: 0.38,
+    volume24h: 51234000000,
+    marketCap: 1320000000000,
+    keywords: ["bitcoin", "institutional flows", "ETF demand"],
   },
   {
-    id: "eth",
     symbol: "ETH",
     assetType: "CRYPTO",
     displayName: "Ethereum",
     coinGeckoId: "ethereum",
-    priceData: {
-      symbol: "ETH",
-      assetType: "CRYPTO",
-      price: 3480,
-      priceChange24h: 46,
-      priceChangePercent24h: 1.34,
-      volume24h: 21450000000,
-      marketCap: 418000000000,
-      currency: "USD",
-      capturedAt: new Date().toISOString(),
-    },
-    sentimentSnapshot: {
-      symbol: "ETH",
-      windowHours: 24,
-      avgScore: 0.12,
-      dominantLabel: "positive",
-      positiveCount: 7,
-      negativeCount: 4,
-      neutralCount: 4,
-      articleCount: 15,
-      capturedAt: new Date().toISOString(),
-    },
-    divergenceAlert: null,
-    recentNews: [],
+    basePrice: 3480,
+    priceChangePercent24h: 1.34,
+    baseSentiment: 0.12,
+    volume24h: 21450000000,
+    marketCap: 418000000000,
+    keywords: ["ethereum", "staking", "network activity"],
   },
   {
-    id: "gbpusd",
-    symbol: "GBP/USD",
-    assetType: "FOREX",
-    displayName: "British Pound / US Dollar",
-    priceData: {
-      symbol: "GBP/USD",
-      assetType: "FOREX",
-      price: 1.2742,
-      priceChange24h: -0.014,
-      priceChangePercent24h: -1.12,
-      volume24h: null,
-      marketCap: null,
-      currency: "USD",
-      capturedAt: new Date().toISOString(),
-    },
-    sentimentSnapshot: {
-      symbol: "GBP/USD",
-      windowHours: 24,
-      avgScore: -0.22,
-      dominantLabel: "negative",
-      positiveCount: 2,
-      negativeCount: 8,
-      neutralCount: 3,
-      articleCount: 13,
-      capturedAt: new Date().toISOString(),
-    },
-    divergenceAlert: null,
-    recentNews: [],
-  },
-  {
-    id: "sol",
     symbol: "SOL",
     assetType: "CRYPTO",
     displayName: "Solana",
     coinGeckoId: "solana",
-    priceData: {
-      symbol: "SOL",
-      assetType: "CRYPTO",
-      price: 184.13,
-      priceChange24h: -4.2,
-      priceChangePercent24h: -2.23,
-      volume24h: 3200000000,
-      marketCap: 89000000000,
-      currency: "USD",
-      capturedAt: new Date().toISOString(),
-    },
-    sentimentSnapshot: {
-      symbol: "SOL",
-      windowHours: 24,
-      avgScore: 0.27,
-      dominantLabel: "positive",
-      positiveCount: 8,
-      negativeCount: 3,
-      neutralCount: 3,
-      articleCount: 14,
-      capturedAt: new Date().toISOString(),
-    },
-    divergenceAlert: {
-      symbol: "SOL",
-      priceChangePercent: -2.23,
-      sentimentScore: 0.27,
-      divergenceType: "BEARISH_PRICE_BULLISH_SENTIMENT",
-      severity: "MEDIUM",
-      message: "SOL is falling while sentiment stays constructive, suggesting hidden strength.",
-      detectedAt: new Date().toISOString(),
-    },
-    recentNews: [],
+    basePrice: 184.13,
+    priceChangePercent24h: -2.23,
+    baseSentiment: 0.27,
+    volume24h: 3200000000,
+    marketCap: 89000000000,
+    keywords: ["solana", "developer activity", "throughput"],
+  },
+  {
+    symbol: "ADA",
+    assetType: "CRYPTO",
+    displayName: "Cardano",
+    coinGeckoId: "cardano",
+    basePrice: 0.74,
+    priceChangePercent24h: 1.16,
+    baseSentiment: 0.09,
+    volume24h: 680000000,
+    marketCap: 26200000000,
+    keywords: ["cardano", "ecosystem updates", "layer one"],
+  },
+  {
+    symbol: "XRP",
+    assetType: "CRYPTO",
+    displayName: "XRP",
+    coinGeckoId: "ripple",
+    basePrice: 0.62,
+    priceChangePercent24h: 0.84,
+    baseSentiment: 0.04,
+    volume24h: 1700000000,
+    marketCap: 34000000000,
+    keywords: ["xrp", "payments", "regulatory outlook"],
+  },
+  {
+    symbol: "BNB",
+    assetType: "CRYPTO",
+    displayName: "BNB",
+    coinGeckoId: "binancecoin",
+    basePrice: 588,
+    priceChangePercent24h: 1.92,
+    baseSentiment: 0.13,
+    volume24h: 1400000000,
+    marketCap: 86000000000,
+    keywords: ["bnb", "exchange flows", "token utility"],
+  },
+  {
+    symbol: "DOGE",
+    assetType: "CRYPTO",
+    displayName: "Dogecoin",
+    coinGeckoId: "dogecoin",
+    basePrice: 0.18,
+    priceChangePercent24h: -1.47,
+    baseSentiment: -0.05,
+    volume24h: 990000000,
+    marketCap: 26000000000,
+    keywords: ["dogecoin", "meme coin", "retail traders"],
+  },
+  {
+    symbol: "AVAX",
+    assetType: "CRYPTO",
+    displayName: "Avalanche",
+    coinGeckoId: "avalanche-2",
+    basePrice: 42.6,
+    priceChangePercent24h: 2.11,
+    baseSentiment: 0.07,
+    volume24h: 750000000,
+    marketCap: 17000000000,
+    keywords: ["avalanche", "subnets", "defi liquidity"],
+  },
+  {
+    symbol: "EUR/USD",
+    assetType: "FOREX",
+    displayName: "Euro / US Dollar",
+    basePrice: 1.0924,
+    priceChangePercent24h: 0.36,
+    baseSentiment: 0.11,
+    volume24h: null,
+    marketCap: null,
+    keywords: ["ecb", "fed", "euro dollar"],
+  },
+  {
+    symbol: "GBP/USD",
+    assetType: "FOREX",
+    displayName: "British Pound / US Dollar",
+    basePrice: 1.2742,
+    priceChangePercent24h: -1.12,
+    baseSentiment: -0.22,
+    volume24h: null,
+    marketCap: null,
+    keywords: ["sterling", "boe", "growth outlook"],
+  },
+  {
+    symbol: "USD/JPY",
+    assetType: "FOREX",
+    displayName: "US Dollar / Japanese Yen",
+    basePrice: 151.82,
+    priceChangePercent24h: 0.58,
+    baseSentiment: -0.31,
+    volume24h: null,
+    marketCap: null,
+    keywords: ["yen", "boj", "intervention risk"],
+  },
+  {
+    symbol: "XAU/USD",
+    assetType: "FOREX",
+    displayName: "Gold / US Dollar",
+    basePrice: 2192.1,
+    priceChangePercent24h: 0.91,
+    baseSentiment: 0.42,
+    volume24h: null,
+    marketCap: null,
+    keywords: ["gold", "safe haven", "real yields"],
+  },
+  {
+    symbol: "USD/CAD",
+    assetType: "FOREX",
+    displayName: "US Dollar / Canadian Dollar",
+    basePrice: 1.3526,
+    priceChangePercent24h: -0.28,
+    baseSentiment: -0.06,
+    volume24h: null,
+    marketCap: null,
+    keywords: ["loonie", "oil correlation", "bank of canada"],
+  },
+  {
+    symbol: "AUD/USD",
+    assetType: "FOREX",
+    displayName: "Australian Dollar / US Dollar",
+    basePrice: 0.6584,
+    priceChangePercent24h: 0.41,
+    baseSentiment: 0.08,
+    volume24h: null,
+    marketCap: null,
+    keywords: ["aussie", "rba", "china demand"],
+  },
+  {
+    symbol: "USD/CHF",
+    assetType: "FOREX",
+    displayName: "US Dollar / Swiss Franc",
+    basePrice: 0.8823,
+    priceChangePercent24h: -0.18,
+    baseSentiment: -0.04,
+    volume24h: null,
+    marketCap: null,
+    keywords: ["swiss franc", "snb", "safe haven"],
+  },
+  {
+    symbol: "NZD/USD",
+    assetType: "FOREX",
+    displayName: "New Zealand Dollar / US Dollar",
+    basePrice: 0.6112,
+    priceChangePercent24h: 0.22,
+    baseSentiment: 0.03,
+    volume24h: null,
+    marketCap: null,
+    keywords: ["kiwi dollar", "rbnz", "risk appetite"],
+  },
+  {
+    symbol: "EUR/GBP",
+    assetType: "FOREX",
+    displayName: "Euro / British Pound",
+    basePrice: 0.8564,
+    priceChangePercent24h: 0.19,
+    baseSentiment: 0.02,
+    volume24h: null,
+    marketCap: null,
+    keywords: ["euro sterling", "ecb", "boe"],
+  },
+  {
+    symbol: "EUR/JPY",
+    assetType: "FOREX",
+    displayName: "Euro / Japanese Yen",
+    basePrice: 165.74,
+    priceChangePercent24h: 0.72,
+    baseSentiment: 0.12,
+    volume24h: null,
+    marketCap: null,
+    keywords: ["euro yen", "carry trade", "boj"],
+  },
+  {
+    symbol: "EUR/CHF",
+    assetType: "FOREX",
+    displayName: "Euro / Swiss Franc",
+    basePrice: 0.9581,
+    priceChangePercent24h: 0.08,
+    baseSentiment: 0.01,
+    volume24h: null,
+    marketCap: null,
+    keywords: ["euro swiss franc", "ecb", "snb"],
+  },
+  {
+    symbol: "USD/KES",
+    assetType: "FOREX",
+    displayName: "US Dollar / Kenyan Shilling",
+    basePrice: 129.36,
+    priceChangePercent24h: -0.54,
+    baseSentiment: -0.09,
+    volume24h: null,
+    marketCap: null,
+    keywords: ["kenyan shilling", "cbk", "import demand"],
   },
 ];
 
-const searchCatalog: AssetSearchResult[] = [
-  { symbol: "BTC", assetType: "CRYPTO" as const, displayName: "Bitcoin", coinGeckoId: "bitcoin" },
-  { symbol: "ETH", assetType: "CRYPTO" as const, displayName: "Ethereum", coinGeckoId: "ethereum" },
-  { symbol: "SOL", assetType: "CRYPTO" as const, displayName: "Solana", coinGeckoId: "solana" },
-  { symbol: "EUR/USD", assetType: "FOREX" as const, displayName: "Euro / US Dollar" },
-  { symbol: "GBP/USD", assetType: "FOREX" as const, displayName: "British Pound / US Dollar" },
-  { symbol: "USD/JPY", assetType: "FOREX" as const, displayName: "US Dollar / Japanese Yen" },
-  { symbol: "XAU/USD", assetType: "FOREX" as const, displayName: "Gold / US Dollar" },
-];
+const defaultSymbols = ["BTC", "ETH", "SOL", "EUR/USD", "GBP/USD", "USD/JPY", "AUD/USD", "USD/CAD"];
 
-const articleSets: Record<string, WatchlistAsset["recentNews"]> = {
-  BTC: [
-    {
-      id: "btc-1",
-      headline: "Bitcoin bullish breakout gains traction on institutional flows",
-      description: "ETF-linked optimism and stronger inflows are supporting upside conviction.",
-      url: "https://example.com/btc-1",
-      sourceName: "Reuters",
-      publishedAt: new Date().toISOString(),
-      sentimentScore: 0.52,
-      sentimentLabel: "positive",
-    },
-    {
-      id: "btc-2",
-      headline: "Traders monitor volatility as Bitcoin reclaims key technical zone",
-      description: "Analysts say macro calm is helping risk appetite remain constructive.",
-      url: "https://example.com/btc-2",
-      sourceName: "Bloomberg",
-      publishedAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-      sentimentScore: 0.21,
-      sentimentLabel: "positive",
-    },
-  ],
-  ETH: [
-    {
-      id: "eth-1",
-      headline: "Ethereum sentiment improves as network activity rebounds",
-      description: "Developers and traders point to renewed strength in on-chain flows.",
-      url: "https://example.com/eth-1",
-      sourceName: "CoinDesk",
-      publishedAt: new Date().toISOString(),
-      sentimentScore: 0.18,
-      sentimentLabel: "positive",
-    },
-  ],
-  SOL: [
-    {
-      id: "sol-1",
-      headline: "Solana buyers return even as price trades below last week highs",
-      description: "News flow remains constructive despite short-term downside pressure.",
-      url: "https://example.com/sol-1",
-      sourceName: "Reuters",
-      publishedAt: new Date().toISOString(),
-      sentimentScore: 0.29,
-      sentimentLabel: "positive",
-    },
-  ],
-  "GBP/USD": [
-    {
-      id: "gbp-1",
-      headline: "Sterling under pressure as traders reassess BoE growth outlook",
-      description: "Macro headlines remain cautious and sentiment has softened.",
-      url: "https://example.com/gbp-1",
-      sourceName: "Financial Times",
-      publishedAt: new Date().toISOString(),
-      sentimentScore: -0.24,
-      sentimentLabel: "negative",
-    },
-  ],
-};
+function classifySentiment(score: number): SentimentLabel {
+  if (score >= 0.05) return "positive";
+  if (score <= -0.05) return "negative";
+  return "neutral";
+}
 
-watchlistAssets = watchlistAssets.map((asset) => ({
-  ...asset,
-  recentNews: articleSets[asset.symbol] || [],
+function toAssetId(symbol: string) {
+  return symbol.toLowerCase().replace(/\W/g, "-");
+}
+
+function getCatalogEntry(symbol: string) {
+  return demoCatalog.find((asset) => asset.symbol === symbol);
+}
+
+function roundPrice(symbol: string, assetType: "CRYPTO" | "FOREX", price: number) {
+  if (assetType === "FOREX" && /JPY|KES|XAU/.test(symbol)) {
+    return Number(price.toFixed(2));
+  }
+
+  if (assetType === "CRYPTO" && price < 1) {
+    return Number(price.toFixed(4));
+  }
+
+  return Number(price.toFixed(assetType === "FOREX" ? 4 : 2));
+}
+
+function buildPriceData(entry: DemoCatalogEntry): PriceData {
+  const price = roundPrice(entry.symbol, entry.assetType, entry.basePrice);
+  const priceChange24h = Number((price - price / (1 + entry.priceChangePercent24h / 100)).toFixed(4));
+
+  return {
+    symbol: entry.symbol,
+    assetType: entry.assetType,
+    price,
+    priceChange24h,
+    priceChangePercent24h: entry.priceChangePercent24h,
+    volume24h: entry.volume24h,
+    marketCap: entry.marketCap,
+    currency: entry.symbol.includes("/") ? entry.symbol.split("/")[1] : "USD",
+    capturedAt: new Date().toISOString(),
+  };
+}
+
+function buildSentimentSnapshot(entry: DemoCatalogEntry): SentimentSnapshot {
+  const articleCount = entry.assetType === "CRYPTO" ? 16 : 13;
+  const positiveCount = Math.max(1, Math.round(((entry.baseSentiment + 1) / 2) * articleCount * 0.72));
+  const negativeCount = Math.max(1, Math.round(((1 - entry.baseSentiment) / 2) * articleCount * 0.45));
+  const neutralCount = Math.max(0, articleCount - positiveCount - negativeCount);
+
+  return {
+    symbol: entry.symbol,
+    windowHours: 24,
+    avgScore: Number(entry.baseSentiment.toFixed(3)),
+    dominantLabel: classifySentiment(entry.baseSentiment),
+    positiveCount,
+    negativeCount,
+    neutralCount,
+    articleCount,
+    capturedAt: new Date().toISOString(),
+  };
+}
+
+function buildRecentNews(entry: DemoCatalogEntry): WatchlistAsset["recentNews"] {
+  const upbeat = entry.baseSentiment >= 0;
+  const headlines = upbeat
+    ? [
+        `${entry.displayName} buyers stay engaged as ${entry.keywords[1]} improves`,
+        `${entry.displayName} sentiment holds firm while traders watch ${entry.keywords[2]}`,
+      ]
+    : [
+        `${entry.displayName} traders turn cautious as ${entry.keywords[1]} softens`,
+        `${entry.displayName} momentum cools while desks monitor ${entry.keywords[2]}`,
+      ];
+
+  return headlines.map((headline, index) => {
+    const score = Number((entry.baseSentiment + (index === 0 ? 0.08 : -0.03)).toFixed(3));
+    return {
+      id: `${toAssetId(entry.symbol)}-article-${index + 1}`,
+      headline,
+      description: `${entry.displayName} remains active on trader watchlists as markets compare price action with news flow.`,
+      url: `https://example.com/${toAssetId(entry.symbol)}/${index + 1}`,
+      sourceName: index % 2 === 0 ? "Reuters" : "Bloomberg",
+      publishedAt: new Date(Date.now() - index * 2 * 60 * 60 * 1000).toISOString(),
+      sentimentScore: score,
+      sentimentLabel: classifySentiment(score),
+    };
+  });
+}
+
+function buildDivergenceAlert(
+  entry: DemoCatalogEntry,
+  priceData: PriceData,
+  sentimentSnapshot: SentimentSnapshot
+): DivergenceAlert | null {
+  if (priceData.priceChangePercent24h === null) {
+    return null;
+  }
+
+  if (priceData.priceChangePercent24h < -1 && sentimentSnapshot.avgScore > 0.15) {
+    return {
+      symbol: entry.symbol,
+      priceChangePercent: priceData.priceChangePercent24h,
+      sentimentScore: sentimentSnapshot.avgScore,
+      divergenceType: "BEARISH_PRICE_BULLISH_SENTIMENT",
+      severity: Math.abs(priceData.priceChangePercent24h) > 2 ? "HIGH" : "MEDIUM",
+      message: `${entry.symbol} is dipping while sentiment stays constructive, suggesting hidden strength.`,
+      detectedAt: new Date().toISOString(),
+    };
+  }
+
+  if (priceData.priceChangePercent24h > 1 && sentimentSnapshot.avgScore < -0.15) {
+    return {
+      symbol: entry.symbol,
+      priceChangePercent: priceData.priceChangePercent24h,
+      sentimentScore: sentimentSnapshot.avgScore,
+      divergenceType: "BULLISH_PRICE_BEARISH_SENTIMENT",
+      severity: Math.abs(priceData.priceChangePercent24h) > 2 ? "HIGH" : "MEDIUM",
+      message: `${entry.symbol} is rising even while sentiment remains weak, raising a reversal risk.`,
+      detectedAt: new Date().toISOString(),
+    };
+  }
+
+  return null;
+}
+
+function buildWatchlistAsset(entry: DemoCatalogEntry): WatchlistAsset {
+  const priceData = buildPriceData(entry);
+  const sentimentSnapshot = buildSentimentSnapshot(entry);
+
+  return {
+    id: toAssetId(entry.symbol),
+    symbol: entry.symbol,
+    assetType: entry.assetType,
+    displayName: entry.displayName,
+    coinGeckoId: entry.coinGeckoId,
+    priceData,
+    sentimentSnapshot,
+    divergenceAlert: buildDivergenceAlert(entry, priceData, sentimentSnapshot),
+    recentNews: buildRecentNews(entry),
+  };
+}
+
+let watchlistAssets: WatchlistAsset[] = defaultSymbols
+  .map((symbol) => getCatalogEntry(symbol))
+  .filter((entry): entry is DemoCatalogEntry => Boolean(entry))
+  .map(buildWatchlistAsset);
+
+const searchCatalog: AssetSearchResult[] = demoCatalog.map((entry) => ({
+  symbol: entry.symbol,
+  assetType: entry.assetType,
+  displayName: entry.displayName,
+  coinGeckoId: entry.coinGeckoId,
 }));
 
 let trades: TradeEntry[] = [
@@ -293,17 +483,19 @@ function makeChart(symbol: string, basePrice: number, baseSentiment: number): Ch
   return Array.from({ length: 24 }).map((_, index) => {
     const timestamp = Date.now() - (24 - index) * 60 * 60 * 1000;
     const swing = Math.sin(index * 0.9 + symbol.length) * 0.018;
+    const sentimentScore = Number((baseSentiment + Math.cos(index * 0.5) * 0.16).toFixed(3));
     return {
       timestamp,
       price: Number((basePrice * (1 + swing)).toFixed(basePrice > 100 ? 2 : 4)),
-      sentimentScore: Number((baseSentiment + Math.cos(index * 0.5) * 0.16).toFixed(3)),
-      sentimentLabel: baseSentiment > 0 ? "positive" : "negative",
+      sentimentScore,
+      sentimentLabel: classifySentiment(sentimentScore),
     };
   });
 }
 
 function getAsset(symbol: string) {
-  return watchlistAssets.find((asset) => asset.symbol === symbol);
+  const catalogEntry = getCatalogEntry(symbol);
+  return watchlistAssets.find((asset) => asset.symbol === symbol) || (catalogEntry ? buildWatchlistAsset(catalogEntry) : undefined);
 }
 
 function buildAnalytics(): JournalAnalytics {
@@ -381,15 +573,19 @@ export const demoApi = {
     }
 
     const asset: WatchlistAsset = {
-      id: payload.symbol.toLowerCase().replace(/\W/g, "-"),
-      symbol: payload.symbol,
-      assetType: payload.assetType,
-      displayName: payload.displayName,
-      coinGeckoId: payload.coinGeckoId,
-      priceData: null,
-      sentimentSnapshot: null,
-      divergenceAlert: null,
-      recentNews: [],
+      ...(getCatalogEntry(payload.symbol)
+        ? buildWatchlistAsset(getCatalogEntry(payload.symbol)!)
+        : {
+            id: payload.symbol.toLowerCase().replace(/\W/g, "-"),
+            symbol: payload.symbol,
+            assetType: payload.assetType,
+            displayName: payload.displayName,
+            coinGeckoId: payload.coinGeckoId,
+            priceData: null,
+            sentimentSnapshot: null,
+            divergenceAlert: null,
+            recentNews: [],
+          }),
     };
     watchlistAssets = [...watchlistAssets, asset];
     return { asset };
@@ -413,7 +609,8 @@ export const demoApi = {
       sentimentHistory: chart.map((point) => ({
         timestamp: point.timestamp,
         sentimentScore: point.sentimentScore,
-        sentimentLabel: point.sentimentScore && point.sentimentScore > 0 ? "positive" : "negative",
+        sentimentLabel:
+          point.sentimentScore !== null ? classifySentiment(point.sentimentScore) : undefined,
       })),
     };
   },

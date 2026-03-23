@@ -1,5 +1,5 @@
 import { AssetDetailResponse, AssetType, ChartWindow, WatchlistAsset } from "@sentiment-watchlist/shared-types";
-import { getForexRate } from "../adapters/alphaVantage.adapter";
+import { getForexHistoricalPrices, getForexRate } from "../adapters/alphaVantage.adapter";
 import { getCryptoHistoricalPrices, getCryptoPrices } from "../adapters/coinGecko.adapter";
 import { config } from "../config";
 import {
@@ -17,6 +17,24 @@ import { computeSentimentForSymbol, scoreNewsArticles } from "./sentiment.servic
 
 function getUserWatchlistId(userId: string) {
   return mockWatchlists.find((watchlist) => watchlist.userId === userId)?.id || demoWatchlistId;
+}
+
+function withSentimentOverlay(symbol: string, window: ChartWindow, points: Array<{ timestamp: number; price: number }>) {
+  const baseSentiment = generateSentiment(symbol, window === "24h" ? 24 : 168).avgScore;
+
+  return points.map((point, index) => {
+    const sentimentScore = Number(
+      Math.max(-1, Math.min(1, baseSentiment + Math.sin(index * 0.75 + symbol.length) * 0.08)).toFixed(3)
+    );
+
+    return {
+      timestamp: point.timestamp,
+      price: point.price,
+      sentimentScore,
+      sentimentLabel:
+        sentimentScore > 0.05 ? "positive" : sentimentScore < -0.05 ? "negative" : "neutral",
+    };
+  });
 }
 
 async function getLatestPrice(symbol: string, assetType: AssetType, coinGeckoId?: string) {
@@ -161,16 +179,15 @@ export async function getAssetDetail(symbol: string, window: ChartWindow): Promi
     coinGeckoId: catalog.coinGeckoId,
   });
 
+  const historicalPoints =
+    catalog.assetType === "CRYPTO"
+      ? await getCryptoHistoricalPrices(catalog.coinGeckoId || symbol.toLowerCase(), window === "24h" ? 1 : 7)
+      : await getForexHistoricalPrices(symbol.split("/")[0], symbol.split("/")[1], window);
+
   const chart =
-    config.mockMode || catalog.assetType === "FOREX"
-      ? generateChartSeries(symbol, catalog.assetType, window)
-      : (await getCryptoHistoricalPrices(catalog.coinGeckoId || symbol.toLowerCase(), window === "24h" ? 1 : 7)).map(
-          (point, index) => ({
-            timestamp: point.timestamp,
-            price: point.price,
-            sentimentScore: generateSentiment(symbol, window === "24h" ? 24 : 168).avgScore + Math.sin(index) * 0.08,
-          })
-        );
+    historicalPoints.length > 0
+      ? withSentimentOverlay(symbol, window, historicalPoints)
+      : generateChartSeries(symbol, catalog.assetType, window);
 
   const sentimentHistory = chart.map((point) => ({
     timestamp: point.timestamp,
@@ -195,7 +212,7 @@ export async function getAssetDetail(symbol: string, window: ChartWindow): Promi
 
 export async function searchAssets(query: string) {
   const normalized = query.trim().toLowerCase();
-  if (!normalized) return assetCatalog.slice(0, 8);
+  if (!normalized) return assetCatalog.slice(0, 12);
 
   return assetCatalog.filter((asset) => {
     const haystack = `${asset.symbol} ${asset.displayName} ${asset.newsKeywords.join(" ")}`.toLowerCase();
