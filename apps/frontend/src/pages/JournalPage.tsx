@@ -75,7 +75,11 @@ export default function JournalPage() {
 
       {analytics && <KpiStrip metrics={metrics} />}
 
-      <TradeEntryForm onSubmit={async (payload) => createMutation.mutateAsync(payload)} />
+      <TradeEntryForm
+        onSubmit={async (payload) => {
+          await createMutation.mutateAsync(payload);
+        }}
+      />
 
       <JournalTable
         trades={tradesQuery.data?.trades || []}
